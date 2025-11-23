@@ -1,3 +1,17 @@
+# ALNP — Authenticated Lighting Network Protocol (on top of sACN)
+
+This fork keeps the existing sACN (E1.31) transport intact and adds an authenticated control plane
+inspired by E1.33 (RDMnet). ALNP performs a challenge/response handshake and session negotiation
+before any sACN universe is allowed to stream, preserving the original packet format and
+performance characteristics.
+
+Key additions:
+- Control-plane handshake (`src/alnp/handshake`) with controller/node roles.
+- Message schema aligned with E1.33 ClientConnect/Reply (`src/alnp/messages/alnp_handshake.proto`).
+- Session guard + authentication interfaces in Rust (`src/alnp/src`).
+- ALNP-Stream wrapper that gates sACN sender/receiver usage (`src/alnp/src/stream.rs`).
+- Protocol details in `SPEC.md` and development roadmap in `roadmap.md`.
+
 # sACN
 
 *Streaming ACN (sACN)* is an ANSI standard for entertainment technology by

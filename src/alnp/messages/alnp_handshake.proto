@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package alnp.handshake.v1;
+
+// Controller -> Node
+message ControllerHello {
+  bytes controller_cid = 1;
+  string manufacturer = 2;
+  string model = 3;
+  string firmware_rev = 4;
+  ProtocolVersion requested_version = 5;
+  CapabilitySet capabilities = 6;
+  KeyExchangeProposal key_exchange = 7;
+}
+
+// Node -> Controller
+message NodeHello {
+  bytes node_cid = 1;
+  string manufacturer = 2;
+  string model = 3;
+  string firmware_rev = 4;
+  ProtocolVersion supported_version = 5;
+  CapabilitySet capabilities = 6;
+  KeyExchangeProposal key_exchange = 7;
+  bool auth_required = 8;
+}
+
+// Node -> Controller challenge
+message ChallengeRequest {
+  bytes nonce = 1;
+  bytes controller_expected = 2;
+  SignatureScheme signature_scheme = 3;
+}
+
+// Controller -> Node response
+message ChallengeResponse {
+  bytes nonce = 1;
+  bytes signature = 2;
+  bytes key_confirmation = 3;
+}
+
+// Node -> Controller acknowledgement
+message SessionEstablished {
+  bytes session_id = 1;
+  ProtocolVersion agreed_version = 2;
+  bytes stream_key = 3;
+  uint64 expires_at_epoch_ms = 4;
+}
+
+message ProtocolVersion {
+  uint32 major = 1;
+  uint32 minor = 2;
+  uint32 patch = 3;
+}
+
+message CapabilitySet {
+  bool supports_encryption = 1;
+  bool supports_redundancy = 2;
+  uint32 max_universes = 3;
+  string vendor_data = 4;
+}
+
+message KeyExchangeProposal {
+  string algorithm = 1;
+  bytes public_key = 2;
+}
+
+enum SignatureScheme {
+  SIG_SCHEME_ED25519 = 0;
+  SIG_SCHEME_ECDSA_P256 = 1;
+}

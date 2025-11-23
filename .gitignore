@@ -67,3 +67,10 @@ Thumbs.db
 .kwps/
 kwinject.out
 kwtables/
+
+# ALNP build artifacts
+dist/
+target/
+node_modules/
+bindings/ts/dist/
+bindings/python/dist/

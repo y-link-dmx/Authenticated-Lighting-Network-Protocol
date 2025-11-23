@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment=" Added control-plane signing/verification, refined reliability, and public-facing APIs/bindings scaffolds">
+      <change beforePath="$PROJECT_DIR$/.devcontainer/base-container/devcontainer.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devcontainer/doxygen-container/devcontainer.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devcontainer/klocwork-container/devcontainer.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devcontainer/launch.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.devcontainer/msan-container/devcontainer.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitlab-ci.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Authenticated-Lighting-Network-Protocol.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/git_toolbox_prj.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakePresets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SPEC.md" beforeDir="false" afterPath="$PROJECT_DIR$/SPEC.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ThirdPartySoftware.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/AddCMakeTools.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/AddCoreLibraryTarget.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/OssDependencyTools.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/ResolveDependencies.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/SacnSourceManifest.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Doxyfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/additional_documentation.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/building_and_integrating.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/configuring_lwip.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/getting_started.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/global_init_and_destroy.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/mainpage.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/per_address_priority.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/source_loss_behavior.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/using_dmx_merger.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/using_merge_receiver.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/using_receiver.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/pages/using_source.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/etc_project.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/.clang-tidy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/linux/keyboard_interrupt.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/network_select.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/network_select.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/other/keyboard_interrupt.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/sacn_source_example.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/sacn_source_example.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/cpp/source/src/windows/keyboard_interrupt.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/receiver/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/receiver/src/linux/keyboard_interrupt.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/receiver/src/main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/receiver/src/other/keyboard_interrupt.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/receiver/src/windows/keyboard_interrupt.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/external/fff/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/external/fff/etc_fff_wrapper.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/external/fff/fff.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/common.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/cpp/.clang-tidy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/cpp/common.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/cpp/dmx_merger.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/cpp/merge_receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/cpp/receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/cpp/source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/cpp/source_detector.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/dmx_merger.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/merge_receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/opts.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/source_detector.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sacn/version.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/dmx_merger.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/merge_receiver/merge_receiver.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/merge_receiver/merge_receiver_source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/merge_receiver/merged_data.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/receiver.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/recv_thread_context.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/remote_source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/sampling_ended.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/sampling_period_netint.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/sampling_started.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/source_limit_exceeded.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/source_pap_lost.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/sources_lost.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/status_lists.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/to_erase.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/tracked_source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/receiver/universe_data.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/source/source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/source/source_netint.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/source/source_universe.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/source/unicast_destination.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/source_detector/source_detector.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/source_detector/source_detector_expired_source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/mem/source_detector/universe_discovery_source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/merge_receiver.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/pdu.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/common.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/dmx_merger.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/common.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/merge_receiver/merge_receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/merge_receiver/merge_receiver_source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/merge_receiver/merged_data.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/recv_thread_context.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/remote_source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/sampling_ended.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/sampling_period_netint.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/sampling_started.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/source_limit_exceeded.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/source_pap_lost.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/sources_lost.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/status_lists.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/to_erase.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/tracked_source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/receiver/universe_data.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/source/source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/source/source_netint.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/source/source_universe.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/source/unicast_destination.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/source_detector/source_detector.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/source_detector/source_detector_expired_source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/mem/source_detector/universe_discovery_source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/merge_receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/pdu.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/receiver_state.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/sockets.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/source_detector.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/source_detector_state.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/source_loss.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/source_state.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/private/util.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/receiver.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/receiver_state.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/sockets.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/source_detector.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/source_detector_state.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/source_loss.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/source_state.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/sources.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn/util.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/.clang-tidy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/common.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/dmx_merger.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/common.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/dmx_merger.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/receiver.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/receiver_state.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/sockets.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/source.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/source_detector_state.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/source_loss.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/private/source_state.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/receiver.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/receiver_state.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/sockets.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/source.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/source_detector_state.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/source_loss.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/source_state.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sacn_mock/sources.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/.clang-tidy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/dmx_merger_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/dmx_merger_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_larger_max_slots_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_larger_max_slots_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_sampling_merger_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_sampling_merger_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_smaller_max_slots_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merge_receiver_smaller_max_slots_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merger_internal_buffers_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merger_internal_buffers_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merger_larger_max_slots_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merger_larger_max_slots_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merger_smaller_max_slots_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/merger_smaller_max_slots_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/pap_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/pap_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/receiver_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/receiver_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/sacn_config_common.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/source_detector_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/source_detector_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/source_disabled_dynamic/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/source_disabled_static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/configs/static/sacn_config.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/e2e/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/e2e/coverage/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/e2e/coverage/coverage_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/e2e/coverage/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/e2e/init/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/e2e/init/init_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/e2e/init/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/cpp/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/cpp/receiver/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/cpp/receiver/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/cpp/receiver/test_cpp_receiver.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/cpp/source/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/cpp/source/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/api/cpp/source/test_cpp_source.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/dmx_merger_disabled/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/dmx_merger_disabled/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/dmx_merger_disabled/test_dmx_merger_disabled.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/merge_receiver_disabled/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/merge_receiver_disabled/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/merge_receiver_disabled/test_merge_receiver_disabled.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/receiver_disabled/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/receiver_disabled/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/receiver_disabled/test_receiver_disabled.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/source_detector_disabled/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/source_detector_disabled/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/source_detector_disabled/test_source_detector_disabled.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/source_disabled/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/source_disabled/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/integration/config/source_disabled/test_source_disabled.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_clang_tidy_defs.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/dmx_merger/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/dmx_merger/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/dmx_merger/test_dmx_merger.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/merge_receiver/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/merge_receiver/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/merge_receiver/test_merge_receiver.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/receiver/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/receiver/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/receiver/test_receiver.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/source/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/source/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/source/test_source.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/source_detector/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/source_detector/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/c/source_detector/test_source_detector.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/merge_receiver/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/merge_receiver/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/merge_receiver/test_cpp_merge_receiver.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/merger/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/merger/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/merger/test_cpp_merger.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/receiver/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/receiver/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/receiver/test_cpp_receiver.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/source/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/source/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/source/test_cpp_source.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/source_detector/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/source_detector/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/api/cpp/source_detector/test_cpp_source_detector.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/receiver/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/receiver/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/receiver/test_receiver_state.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/source/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/source/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/source/test_source_state.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/source_detector/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/source_detector/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/state/source_detector/test_source_detector_state.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/utils/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/utils/main.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/utils/test_mem.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/utils/test_pdu.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/utils/test_sockets.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/utils/test_source_loss.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/ci/publish_docs.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/klocwork/linux_clean_build.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/templates/version.h.in" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "kristofferous"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/y-link-dmx/Authenticated-Lighting-Network-Protocol.git",
+    "accountId": "37f597b7-0b3a-468c-9456-8175f1be8b0d"
+  }
+}]]></component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2025" />
+    <option name="minorVersion" value="1.1" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="35scZdLRMdSmp6Je5pWdlrMsc83" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="" />
+      <created>1763902276726</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1763902276726</updated>
+      <workItem from="1763902278166" duration="3737000" />
+    </task>
+    <task id="LOCAL-00001" summary="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (src/alnp/Cargo.toml, src/alnp/src/lib.rs, src/alnp/src/handshake/{mod.rs,client.rs,server.rs}, src/alnp/src/    &#10;    session/mod.rs, src/alnp/src/crypto/mod.rs, src/alnp/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (src/alnp/src/messages/mod.rs, src/alnp/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, src/alnp/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (src/alnp/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS.">
+      <option name="closed" value="true" />
+      <created>1763903155613</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763903155613</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (src/alnp/Cargo.toml, src/alnp/src/lib.rs, src/alnp/src/handshake/{mod.rs,client.rs,server.rs}, src/alnp/src/    &#10;    session/mod.rs, src/alnp/src/crypto/mod.rs, src/alnp/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (src/alnp/src/messages/mod.rs, src/alnp/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, src/alnp/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (src/alnp/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS.">
+      <option name="closed" value="true" />
+      <created>1763905214127</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763905214127</updated>
+    </task>
+    <task id="LOCAL-00003" summary=" Added control-plane signing/verification, refined reliability, and public-facing APIs/bindings scaffolds">
+      <option name="closed" value="true" />
+      <created>1763905370593</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763905370593</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (src/alnp/Cargo.toml, src/alnp/src/lib.rs, src/alnp/src/handshake/{mod.rs,client.rs,server.rs}, src/alnp/src/    &#10;    session/mod.rs, src/alnp/src/crypto/mod.rs, src/alnp/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (src/alnp/src/messages/mod.rs, src/alnp/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, src/alnp/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (src/alnp/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS." />
+    <MESSAGE value=" Added control-plane signing/verification, refined reliability, and public-facing APIs/bindings scaffolds" />
+    <option name="LAST_COMMIT_MESSAGE" value=" Added control-plane signing/verification, refined reliability, and public-facing APIs/bindings scaffolds" />
+  </component>
+</project>

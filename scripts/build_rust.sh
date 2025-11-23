@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+VERSION=$(cat "$ROOT_DIR/VERSION")
+DIST="$ROOT_DIR/dist/rust"
+
+mkdir -p "$DIST"
+cd "$ROOT_DIR/src/alnp"
+
+echo "==> Building Rust crate (version $VERSION)"
+cargo test
+cargo build --release
+
+echo "==> Packaging artifacts"
+cp -f target/release/libalnp.a "$DIST/libalnp-$VERSION.a" 2>/dev/null || true
+cargo package --allow-dirty --no-verify
+cp -f target/package/alnp-$VERSION.crate "$DIST/alnp-$VERSION.crate"
+
+echo "Rust artifacts written to $DIST"

@@ -1,26 +1,69 @@
-# ALNP — Authenticated Lighting Network Protocol (on top of sACN)
+# ALNP — Authenticated Lighting Network Protocol
 
-This fork keeps the existing sACN (E1.31) transport intact and adds an authenticated control plane
-inspired by E1.33 (RDMnet). ALNP performs a challenge/response handshake and session negotiation
-before any sACN universe is allowed to stream, preserving the original packet format and
-performance characteristics.
+[![Build (Rust)](https://github.com/your-org/alnp/actions/workflows/rust-release.yml/badge.svg)](https://github.com/your-org/alnp/actions/workflows/rust-release.yml)
+[![Build (TS)](https://github.com/your-org/alnp/actions/workflows/ts-release.yml/badge.svg)](https://github.com/your-org/alnp/actions/workflows/ts-release.yml)
+[![Build (Python)](https://github.com/your-org/alnp/actions/workflows/python-release.yml/badge.svg)](https://github.com/your-org/alnp/actions/workflows/python-release.yml)
+[![Build (C)](https://github.com/your-org/alnp/actions/workflows/c-release.yml/badge.svg)](https://github.com/your-org/alnp/actions/workflows/c-release.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-Key additions:
-- Control-plane handshake (`src/alnp/handshake`) with controller/node roles.
-- Message schema aligned with E1.33 ClientConnect/Reply (`src/alnp/messages/alnp_handshake.proto`) plus control API (identify, device info, capabilities, wifi creds, universe mapping, mode, status, restart).
-- Session guard + authentication interfaces in Rust (`src/alnp/src`), deterministic state machine, and reliability on the UDP control channel.
-- ALNP-Stream wrapper that gates sACN sender/receiver usage with fail-closed semantics and jitter handling (`src/alnp/src/stream.rs`).
-- Protocol details in `SPEC.md` and development roadmap in `roadmap.md`.
-- TypeScript bindings for Studio (`bindings/ts`) and a C header for firmware (`bindings/c/alnp.h`).
+ALNP adds an authenticated control plane and reliability layer to high-performance lighting streaming. It uses a compact handshake (X25519 + Ed25519) and signed control envelopes over UDP, then gates streaming through ALNP-Stream with jitter handling.
 
-# sACN
+## Highlights
+- Deterministic session state machine (Init → Handshake → Authenticated → Ready → Streaming).
+- Control messages: Identify, DeviceInfo, Capabilities, Wifi creds, Universe mapping, Mode, Status, Restart.
+- Security: X25519 key exchange, Ed25519 signatures, nonce + sequence replay protection.
+- Reliability: retransmit with exponential backoff, keepalives, fail-closed behavior.
+- Streaming: authenticated-only, universe enable/disable, jitter strategies (hold-last, drop, lerp).
+- Bindings: Rust crate, TypeScript package, C header + static lib, Python package stub.
 
-*Streaming ACN (sACN)* is an ANSI standard for entertainment technology by
-[ESTA](http://tsp.esta.org) for transmission of DMX512 data over IP networks. sACN is widely used
-in the entertainment industry for real-time control of entertainment technology, especially
-lighting fixtures.
+## Getting Started
+See `docs/overview.md` and `docs/architecture.md` for a quick tour.
 
-This repository contains a C-language library and a C++ wrapper library for communicating via sACN.
+### Rust
+```sh
+cargo test
+cargo build --release
+```
+
+### TypeScript
+```sh
+cd bindings/ts
+pnpm install
+pnpm run build
+```
+
+### Python
+```sh
+cd bindings/python
+python -m pip install -U build
+python -m build
+```
+
+### C
+```sh
+./scripts/build_c.sh
+```
+
+## Examples
+- Rust: `examples/rust/basic.rs`
+- TypeScript: `examples/ts/basic.ts`
+- Python: `examples/python/basic.py`
+- C: `examples/c/basic.c`
+
+## Protocol Docs
+- `SPEC.md` — wire format, control messages, security model.
+- `docs/handshake.md` — handshake flow.
+- `docs/control_plane.md` — control envelopes and reliability.
+- `docs/streaming.md` — ALNP-Stream behavior.
+- `docs/bindings.md` — language-specific notes.
+
+## Versioning & Releases
+- Current version: see `VERSION`.
+- Release history: `CHANGELOG.md`.
+- GitHub Actions publish Rust/TS/Python/C artifacts on `v*` tags to GitHub Packages (and npm if configured).
+
+## License
+Apache-2.0
 
 ## Documentation
 

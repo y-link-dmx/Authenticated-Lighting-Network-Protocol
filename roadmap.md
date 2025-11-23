@@ -1,35 +1,24 @@
 # ALNP Roadmap
 
-## Phase 0 — Baseline
-- Keep sACN transport untouched; treat ALNP as an overlay.
-- Land protocol scaffolding (handshake modules, message schema, session guard, ALNP-Stream wrapper).
-- Write SPEC.md and examples to guide implementers.
+## Phase 1 — Baseline
+- Stabilize v1 wire format and control API.
+- Document onboarding/discovery flows and bindings.
 
-## Phase 1 — Authenticated Handshake MVP
-- Implement real X25519/Ed25519 primitives (replace placeholder key/nonce code).
-- Add persistent identity store and certificate/key loading API.
-- Integrate timeouts, retries, and keepalive pings on the control channel.
-- Record session state machine telemetry for debugging.
-
-## Phase 2 — Controller/Node Integration
-- Bind ALNP to existing sACN sender/receiver APIs via an adapter layer.
-- Enforce session gating for all universes; include graceful rejection paths.
-- Add capability negotiation (max universes, optional payload privacy flags).
-- Provide C API shims if sACN clients are not Rust-aware.
+## Phase 2 — Reliability & Telemetry
+- Add richer logging/metrics around state transitions and retries.
+- Expose counters for retransmits, replays, and keepalive gaps.
 
 ## Phase 3 — Security Hardening
-- Replace StaticKeyAuthenticator with signature validation (Ed25519/ECDSA).
-- Add certificate-based identities and pinning/CRL-style revocation hooks.
-- Define replay protections (nonce freshness, session expiry, channel binding).
-- Add configurable TLS wrapping for control channel (behind feature flags).
+- Certificate-based identities, pinning, and revocation hooks.
+- Configurable TLS wrapping for control channel.
+- Replay detection across restarts (persistent nonce set).
 
 ## Phase 4 — Streaming Enhancements
-- Optional stream payload encryption/MAC with minimal overhead.
-- Redundant controllers + fast failover for Y-Link deployments.
-- Version negotiation tests and interop fixtures with golden vectors.
-- Load/perf validation to prove sACN throughput remains unaffected.
+- Optional payload encryption/MAC.
+- Redundant controllers and fast failover for large installs.
+- Performance validation to confirm low jitter and low latency.
 
 ## Phase 5 — Tooling & Ecosystem
-- Developer CLI to generate keys/certs and visualize sessions.
-- Wire up conformance tests aligned with E1.33 semantics.
-- Produce documentation site + integration guides for fixture vendors.
+- Developer CLI for key/cert generation and session tracing.
+- Interop/conformance fixtures and reference integrations.
+- Documentation site and sample deployments.

@@ -1,0 +1,56 @@
+name: TypeScript Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: Use pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install
+        run: |
+          cd bindings/ts
+          pnpm install
+      - name: Build
+        run: |
+          cd bindings/ts
+          pnpm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: alnp-ts
+          path: bindings/ts/dist
+      - name: Publish (GitHub Packages)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd bindings/ts
+          pnpm config set '//npm.pkg.github.com/:_authToken' "$NODE_AUTH_TOKEN"
+          pnpm publish --registry=https://npm.pkg.github.com --no-git-checks
+      - name: Publish (npmjs)
+        if: startsWith(github.ref, 'refs/tags/v') && env.NPM_TOKEN != ''
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd bindings/ts
+          pnpm config set '//registry.npmjs.org/:_authToken' "$NPM_TOKEN"
+          pnpm publish --no-git-checks
+      - name: Release notes
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

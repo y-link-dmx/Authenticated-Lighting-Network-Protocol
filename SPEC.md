@@ -1,6 +1,6 @@
 # ALNP — Authenticated Lighting Network Protocol (Draft)
 
-ALNP adds a lightweight, E1.33-inspired control plane in front of sACN (E1.31) streaming. The goal is to gate sACN universes behind an authenticated handshake without altering the sACN packet format or transport behavior.
+ALNP adds a lightweight, E1.33-inspired control plane in front of UDP-based lighting streaming. The goal is to gate universes behind an authenticated handshake without altering streaming payload formats or transport behavior.
 
 ## Roles
 - **Controller**: initiates control-plane sessions before streaming sACN universes.
@@ -42,8 +42,8 @@ Control payloads:
 Capabilities reflect E1.33-style feature flags: encryption support, redundancy awareness, max universes, vendor data.
 
 ## Authentication & Key Exchange
-- **Algorithms**: X25519 or ECDH P-256 for key agreement; Ed25519 or ECDSA-P256 for signatures.
-- **Identity**: 128-bit CID + manufacturer/model/firmware string tuples; certificate-based identities are expected but not mandatory in the draft.
+- **Algorithms**: X25519 for key agreement; Ed25519 for signatures (extensible to ECDSA-P256).
+- **Identity**: 128-bit CID + manufacturer/model/firmware string tuples.
 - **Challenge**: node issues nonce, controller signs it (Ed25519 implemented); node validates signature and key confirmation to bind identity to the agreed key.
 - **Session Keys**: derived from key exchange; `stream_key` reserved for optional payload encryption/MAC.
 - **TLS**: optional wrapping point for the control channel; left as an interface to keep footprint small.
@@ -51,15 +51,19 @@ Capabilities reflect E1.33-style feature flags: encryption support, redundancy a
 ## Keepalive & Versioning
 - Keepalive pings ride the control channel post-handshake; failure to respond tears down the session and blocks streaming.
 - Version negotiation requires major version alignment; minor/patch may diverge if capabilities are compatible.
-- Keepalive task can periodically send `Keepalive` frames on the control channel to detect dead sessions. Keepalive reception resets retransmission counters.
+- Keepalive task periodically sends `Keepalive` frames on the control channel to detect dead sessions; reception resets retransmission counters.
 - Control-plane reliability: sequence numbers, nonce-based replay protection, exponential backoff on retransmit, drop connection after repeated failures.
 
 ## Streaming Integration (ALNP-Stream)
-- Existing sACN multicast/unicast behavior is preserved.
-- The streaming wrapper must call `session.ensure_established()` before sending/accepting any universe.
-- Universe rejection: nodes drop or NACK sACN frames if the session is not authenticated or has expired.
+- Streaming wrapper calls `ensure_streaming_ready()` before sending/accepting any universe.
+- Universe rejection: nodes drop frames if session is not authenticated or has expired.
 - Payload encryption is optional and not in the baseline; ALNP-Stream keeps a hook for inserting it later.
 - Jitter strategies supported: hold-last, drop, or lerp between frames. Sequence rollover resets cached frames.
+
+## Discovery / Onboarding
+- Devices advertise IP + public key over BLE setup mode.
+- Controller reads advertisement, connects via UDP, performs ALNP handshake.
+- Control plane configures Wi-Fi credentials, universes, mode; then streaming begins.
 
 ## Rejection Paths
 - Identity mismatch (CID not authorized, firmware too old).

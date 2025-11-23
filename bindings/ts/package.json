@@ -1,12 +1,14 @@
 {
   "name": "@alnp/bindings",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "TypeScript bindings for the Authenticated Lighting Network Protocol.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p ."
   },
+  "keywords": ["alnp", "lighting", "protocol", "networking", "dmx", "secure"],
+  "license": "Apache-2.0",
   "devDependencies": {
     "typescript": "^5.6.3"
   }

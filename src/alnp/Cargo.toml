@@ -1,9 +1,12 @@
 [package]
 name = "alnp"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
-description = "Authenticated Lighting Network Protocol scaffolding built atop sACN transport."
+description = "Authenticated Lighting Network Protocol: secure control-plane + streaming guard for lighting data."
 license = "Apache-2.0"
+
+[lib]
+crate-type = ["rlib", "staticlib"]
 
 [dependencies]
 async-trait = "0.1"

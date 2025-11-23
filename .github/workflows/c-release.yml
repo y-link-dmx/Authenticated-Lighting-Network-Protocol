@@ -1,0 +1,37 @@
+name: C Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build static lib
+        run: |
+          ./scripts/build_c.sh
+      - name: Archive header + static lib
+        run: |
+          mkdir -p dist/c-tarball
+          tar czf dist/c-tarball/alnp-c.tar.gz -C dist/c .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: alnp-c
+          path: dist/c-tarball/alnp-c.tar.gz
+      - name: Publish to GitHub Packages
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${GITHUB_REF_NAME}" dist/c-tarball/alnp-c.tar.gz --clobber
+      - name: Release notes
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

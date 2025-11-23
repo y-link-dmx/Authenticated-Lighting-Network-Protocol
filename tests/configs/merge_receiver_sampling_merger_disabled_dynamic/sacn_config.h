@@ -1,7 +1,0 @@
-#include "sacn_config_common.h"
-
-#define SACN_DYNAMIC_MEM 1
-
-#define SACN_MERGE_RECEIVER_ENABLE_SAMPLING_MERGER 0
-
-#define SACN_DMX_MERGER_MAX_SLOTS 500

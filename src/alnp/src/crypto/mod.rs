@@ -1,4 +1,7 @@
-use rand::{rngs::OsRng, RngCore};
+use rand::rngs::OsRng;
+use x25519_dalek::{PublicKey as X25519PublicKey, SharedSecret, StaticSecret as X25519Secret};
+
+pub mod identity;
 
 /// Algorithms supported for the initial key exchange.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -24,21 +27,15 @@ pub trait KeyExchange {
 
 /// Lightweight placeholder for X25519; replace with a real implementation later.
 pub struct X25519KeyExchange {
-    public_key: Vec<u8>,
-    private_key: Vec<u8>,
+    public_key: X25519PublicKey,
+    private_key: X25519Secret,
 }
 
 impl X25519KeyExchange {
     pub fn new() -> Self {
-        // Random bytes serve as stand-ins for a real keypair while keeping the API stable.
-        let mut public_key = vec![0u8; 32];
-        let mut private_key = vec![0u8; 32];
-        OsRng.fill_bytes(&mut public_key);
-        OsRng.fill_bytes(&mut private_key);
-        Self {
-            public_key,
-            private_key,
-        }
+        let private_key = X25519Secret::random_from_rng(OsRng);
+        let public_key = X25519PublicKey::from(&private_key);
+        Self { public_key, private_key }
     }
 }
 
@@ -54,16 +51,18 @@ impl KeyExchange for X25519KeyExchange {
     }
 
     fn public_key(&self) -> Vec<u8> {
-        self.public_key.clone()
+        self.public_key.to_bytes().to_vec()
     }
 
     fn derive_shared(&self, peer_public_key: &[u8]) -> SessionKeys {
-        // Placeholder: concatenate keys to obtain deterministic material for higher-level hashing.
-        let mut shared = Vec::with_capacity(self.private_key.len() + peer_public_key.len());
-        shared.extend_from_slice(&self.private_key);
-        shared.extend_from_slice(peer_public_key);
+        let peer_bytes: [u8; 32] = peer_public_key
+            .try_into()
+            .expect("peer public key must be 32 bytes");
+        let peer_pk = X25519PublicKey::from(peer_bytes);
+        let shared_secret: SharedSecret = self.private_key.diffie_hellman(&peer_pk);
+        let shared_secret = shared_secret.as_bytes().to_vec();
         SessionKeys {
-            shared_secret: shared,
+            shared_secret,
             stream_key: None,
         }
     }

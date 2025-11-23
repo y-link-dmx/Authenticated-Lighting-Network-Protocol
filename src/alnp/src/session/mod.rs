@@ -1,14 +1,24 @@
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 
 use async_trait::async_trait;
-use uuid::Uuid;
+use ed25519_dalek::Signature;
 
-use crate::crypto::{KeyExchange, X25519KeyExchange};
+use crate::crypto::{identity::NodeCredentials, KeyExchange, X25519KeyExchange};
 use crate::handshake::{
     client::ClientHandshake, server::ServerHandshake, ChallengeAuthenticator, HandshakeContext,
     HandshakeError, HandshakeParticipant, HandshakeTransport,
 };
 use crate::messages::{CapabilitySet, DeviceIdentity, ProtocolVersion, SessionEstablished};
+
+pub mod state;
+use state::{SessionState, SessionStateError};
+
+impl From<SessionStateError> for HandshakeError {
+    fn from(err: SessionStateError) -> Self {
+        HandshakeError::Protocol(err.to_string())
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum AlnpRole {
@@ -16,39 +26,132 @@ pub enum AlnpRole {
     Node,
 }
 
-#[derive(Debug, Clone)]
-pub struct AlnpSession {
-    pub role: AlnpRole,
-    inner: Arc<Mutex<SessionState>>,
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum JitterStrategy {
+    HoldLast,
+    Drop,
+    Lerp,
 }
 
 #[derive(Debug, Clone)]
-enum SessionState {
-    Initialized,
-    Established(SessionEstablished),
-    Failed(String),
+pub struct AlnpSession {
+    pub role: AlnpRole,
+    state: Arc<Mutex<SessionState>>,
+    last_keepalive: Arc<Mutex<Instant>>,
+    jitter: Arc<Mutex<JitterStrategy>>,
+    streaming_enabled: Arc<Mutex<bool>>,
+    timeout: Duration,
+    session_established: Arc<Mutex<Option<SessionEstablished>>>,
 }
 
 impl AlnpSession {
     pub fn new(role: AlnpRole) -> Self {
         Self {
             role,
-            inner: Arc::new(Mutex::new(SessionState::Initialized)),
+            state: Arc::new(Mutex::new(SessionState::Init)),
+            last_keepalive: Arc::new(Mutex::new(Instant::now())),
+            jitter: Arc::new(Mutex::new(JitterStrategy::HoldLast)),
+            streaming_enabled: Arc::new(Mutex::new(true)),
+            timeout: Duration::from_secs(10),
+            session_established: Arc::new(Mutex::new(None)),
         }
     }
 
     pub fn established(&self) -> Option<SessionEstablished> {
-        let guard = self.inner.lock().ok()?;
-        match &*guard {
-            SessionState::Established(sess) => Some(sess.clone()),
-            _ => None,
+        self.session_established.lock().ok().and_then(|s| s.clone())
+    }
+
+    pub fn state(&self) -> SessionState {
+        self.state
+            .lock()
+            .map(|g| g.clone())
+            .unwrap_or(SessionState::Failed("state poisoned".to_string()))
+    }
+
+    pub fn ensure_streaming_ready(&self) -> Result<SessionEstablished, HandshakeError> {
+        let state = self.state();
+        match state {
+            SessionState::Ready { .. } | SessionState::Streaming { .. } => {
+                self.established().ok_or_else(|| {
+                    HandshakeError::Authentication(
+                        "session missing even though state is ready".into(),
+                    )
+                })
+            }
+            SessionState::Failed(reason) => Err(HandshakeError::Authentication(reason)),
+            _ => Err(HandshakeError::Authentication(
+                "session not ready; streaming blocked".into(),
+            )),
         }
     }
 
-    pub fn ensure_established(&self) -> Result<SessionEstablished, HandshakeError> {
-        self.established().ok_or_else(|| {
-            HandshakeError::Authentication("session not established; streaming blocked".into())
-        })
+    pub fn update_keepalive(&self) {
+        if let Ok(mut k) = self.last_keepalive.lock() {
+            *k = Instant::now();
+        }
+    }
+
+    pub fn check_timeouts(&self) -> Result<(), HandshakeError> {
+        let now = Instant::now();
+        if let Ok(state) = self.state.lock() {
+            if state.check_timeout(self.timeout, now) {
+                self.fail("session timeout".into());
+                return Err(HandshakeError::Transport("session timeout".into()));
+            }
+        }
+        Ok(())
+    }
+
+    pub fn set_jitter_strategy(&self, strat: JitterStrategy) {
+        if let Ok(mut j) = self.jitter.lock() {
+            *j = strat;
+        }
+    }
+
+    pub fn jitter_strategy(&self) -> JitterStrategy {
+        self.jitter.lock().map(|j| *j).unwrap_or(JitterStrategy::Drop)
+    }
+
+    pub fn close(&self) {
+        if let Ok(mut state) = self.state.lock() {
+            *state = SessionState::Closed;
+        }
+    }
+
+    pub fn fail(&self, reason: String) {
+        if let Ok(mut state) = self.state.lock() {
+            *state = SessionState::Failed(reason);
+        }
+    }
+
+    fn transition(&self, next: SessionState) -> Result<(), SessionStateError> {
+        let mut state = self.state.lock().unwrap();
+        let current = state.clone();
+        *state = current.transition(next)?;
+        Ok(())
+    }
+
+    pub fn set_streaming_enabled(&self, enabled: bool) {
+        if let Ok(mut flag) = self.streaming_enabled.lock() {
+            *flag = enabled;
+        }
+    }
+
+    pub fn mark_streaming(&self) {
+        if let Ok(mut state) = self.state.lock() {
+            let current = state.clone();
+            if let SessionState::Ready { .. } = current {
+                let _ = current
+                    .transition(SessionState::Streaming {
+                        since: Instant::now(),
+                    })
+                    .map(|next| *state = next);
+            }
+        }
+    }
+
+    pub fn streaming_enabled(&self) -> bool {
+        self.streaming_enabled.lock().map(|f| *f).unwrap_or(false)
     }
 
     pub async fn connect<T, A, K>(
@@ -66,6 +169,7 @@ impl AlnpSession {
         K: KeyExchange + Send + Sync,
     {
         let session = Self::new(AlnpRole::Controller);
+        session.transition(SessionState::Handshake)?;
         let driver = ClientHandshake {
             identity,
             capabilities,
@@ -76,8 +180,14 @@ impl AlnpSession {
         };
 
         let established = driver.run(transport).await?;
-        if let Ok(mut guard) = session.inner.lock() {
-            *guard = SessionState::Established(established);
+        session.transition(SessionState::Authenticated {
+            since: Instant::now(),
+        })?;
+        session.transition(SessionState::Ready {
+            since: Instant::now(),
+        })?;
+        if let Ok(mut guard) = session.session_established.lock() {
+            *guard = Some(established);
         }
         Ok(session)
     }
@@ -97,6 +207,7 @@ impl AlnpSession {
         K: KeyExchange + Send + Sync,
     {
         let session = Self::new(AlnpRole::Node);
+        session.transition(SessionState::Handshake)?;
         let driver = ServerHandshake {
             identity,
             capabilities,
@@ -107,8 +218,14 @@ impl AlnpSession {
         };
 
         let established = driver.run(transport).await?;
-        if let Ok(mut guard) = session.inner.lock() {
-            *guard = SessionState::Established(established);
+        session.transition(SessionState::Authenticated {
+            since: Instant::now(),
+        })?;
+        session.transition(SessionState::Ready {
+            since: Instant::now(),
+        })?;
+        if let Ok(mut guard) = session.session_established.lock() {
+            *guard = Some(established);
         }
         Ok(session)
     }
@@ -141,6 +258,31 @@ impl ChallengeAuthenticator for StaticKeyAuthenticator {
 
     fn verify_challenge(&self, nonce: &[u8], signature: &[u8]) -> bool {
         signature.ends_with(nonce) && signature.starts_with(&self.secret)
+    }
+}
+
+/// Ed25519-based authenticator using loaded credentials.
+pub struct Ed25519Authenticator {
+    creds: NodeCredentials,
+}
+
+impl Ed25519Authenticator {
+    pub fn new(creds: NodeCredentials) -> Self {
+        Self { creds }
+    }
+}
+
+impl ChallengeAuthenticator for Ed25519Authenticator {
+    fn sign_challenge(&self, nonce: &[u8]) -> Vec<u8> {
+        self.creds.sign(nonce).to_vec()
+    }
+
+    fn verify_challenge(&self, nonce: &[u8], signature: &[u8]) -> bool {
+        if let Ok(sig) = Signature::from_slice(signature) {
+            self.creds.verify(nonce, &sig)
+        } else {
+            false
+        }
     }
 }
 

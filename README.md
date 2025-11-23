@@ -7,10 +7,11 @@ performance characteristics.
 
 Key additions:
 - Control-plane handshake (`src/alnp/handshake`) with controller/node roles.
-- Message schema aligned with E1.33 ClientConnect/Reply (`src/alnp/messages/alnp_handshake.proto`).
-- Session guard + authentication interfaces in Rust (`src/alnp/src`).
-- ALNP-Stream wrapper that gates sACN sender/receiver usage (`src/alnp/src/stream.rs`).
+- Message schema aligned with E1.33 ClientConnect/Reply (`src/alnp/messages/alnp_handshake.proto`) plus control API (identify, device info, capabilities, wifi creds, universe mapping, mode, status, restart).
+- Session guard + authentication interfaces in Rust (`src/alnp/src`), deterministic state machine, and reliability on the UDP control channel.
+- ALNP-Stream wrapper that gates sACN sender/receiver usage with fail-closed semantics and jitter handling (`src/alnp/src/stream.rs`).
 - Protocol details in `SPEC.md` and development roadmap in `roadmap.md`.
+- TypeScript bindings for Studio (`bindings/ts`) and a C header for firmware (`bindings/c/alnp.h`).
 
 # sACN
 

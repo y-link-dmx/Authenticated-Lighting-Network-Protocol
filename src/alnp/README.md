@@ -7,9 +7,13 @@ ClientConnectReply) before any universes are forwarded.
 ## Components
 - `handshake/`: async controller and node drivers built around a minimal transport trait.
 - `messages/`: Rust message types plus a protobuf schema (`messages/alnp_handshake.proto`).
-- `crypto/`: key-exchange and TLS placeholder traits (X25519 by default).
-- `session/`: `AlnpSession` state machine with helpers for both roles.
-- `stream.rs`: `AlnpStream` wrapper that blocks sACN send/subscribe calls until authenticated.
+- `crypto/`: X25519 key exchange, Ed25519 signing, identity loading from PEM, and TLS placeholder traits.
+- `session/`: deterministic `AlnpSession` state machine (`Init → Handshake → Authenticated → Ready → Streaming`, fail/close paths).
+- `stream.rs`: `AlnpStream` wrapper that blocks sACN send/subscribe calls until authenticated; jitter strategies (hold-last, drop, lerp), fail-closed.
+- `handshake/transport.rs`: JSON-over-UDP transport + timeout + reliable control channel with retransmits/backoff and replay protection.
+- `handshake/keepalive.rs`: keepalive task helper for post-handshake liveness.
+- `stream/sacn_adapter.rs`: thin FFI adapter to gate existing sACN sender/receiver handles.
+- `bindings/ts`: TypeScript bindings for Studio; `bindings/c/alnp.h` for firmware.
 
 ## Rust Scaffolding
 Add the crate to a workspace or run `cargo build` directly inside `src/alnp/` to experiment.
@@ -36,3 +40,9 @@ If any step fails, sACN traffic must be rejected until a clean session is negoti
 - Wrap an existing sACN sender/receiver with `AlnpStream`.
 - Calls to `send()`/`subscribe()` check `session.ensure_established()`.
 - Future work: inject payload encryption/MAC once a stream key is negotiated.
+
+## Control Channel
+- Use `JsonUdpTransport` for quick controller/node testing.
+- Wrap any transport in `TimeoutTransport` to enforce receive timeouts.
+- Call `spawn_keepalive` to periodically emit keepalive frames after session establishment.
+- For control payloads, use `ControlEnvelope` with `ControlHeader` (seq + nonce) and Ed25519 signatures; `ReliableControlChannel` retransmits with exponential backoff and drops after repeated failures.

@@ -1,6 +1,48 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+/// Standard control-plane header for replay protection and ordering.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct ControlHeader {
+    pub seq: u64,
+    pub nonce: Vec<u8>,
+    pub timestamp_ms: u64,
+}
+
+/// Signed acknowledge wrapper.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Acknowledge {
+    pub header: ControlHeader,
+    pub ok: bool,
+    pub detail: Option<String>,
+    pub signature: Vec<u8>,
+}
+
+/// Envelope that carries a control payload plus signature for replay protection.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct ControlEnvelope {
+    pub header: ControlHeader,
+    pub payload: ControlPayload,
+    pub signature: Vec<u8>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(tag = "type", content = "body")]
+pub enum ControlPayload {
+    Identify(IdentifyRequest),
+    IdentifyResponse(IdentifyResponse),
+    GetDeviceInfo(DeviceInfoRequest),
+    DeviceInfo(DeviceInfo),
+    GetCapabilities,
+    Capabilities(CapabilitySet),
+    SetWifiCreds(SetWifiCreds),
+    SetUniverseMapping(SetUniverseMapping),
+    SetMode(SetMode),
+    GetStatus,
+    StatusReport(StatusReport),
+    Restart(RestartRequest),
+}
+
 /// ALNP protocol semantic version.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ProtocolVersion {
@@ -79,6 +121,76 @@ pub struct SessionEstablished {
     pub agreed_version: ProtocolVersion,
     pub stream_key: Option<Vec<u8>>,
     pub expires_at_epoch_ms: Option<u64>,
+}
+
+/// Control-plane keepalive frame to detect dead sessions.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Keepalive {
+    pub session_id: Option<Uuid>,
+    pub tick_ms: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct IdentifyRequest {
+    pub blink: bool,
+    pub metadata: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct IdentifyResponse {
+    pub acknowledged: bool,
+    pub detail: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DeviceInfoRequest;
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DeviceInfo {
+    pub identity: DeviceIdentity,
+    pub version: ProtocolVersion,
+    pub mode: OperatingMode,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct SetWifiCreds {
+    pub ssid: String,
+    pub password: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct UniverseMapping {
+    pub universe: u16,
+    pub output_port: u8,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct SetUniverseMapping {
+    pub mappings: Vec<UniverseMapping>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum OperatingMode {
+    Normal,
+    Calibration,
+    Maintenance,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct SetMode {
+    pub mode: OperatingMode,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct StatusReport {
+    pub healthy: bool,
+    pub detail: Option<String>,
+    pub uptime_secs: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct RestartRequest {
+    pub reason: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

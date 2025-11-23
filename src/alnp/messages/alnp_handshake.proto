@@ -47,6 +47,100 @@ message SessionEstablished {
   uint64 expires_at_epoch_ms = 4;
 }
 
+// Control-plane keepalive
+message Keepalive {
+  bytes session_id = 1;
+  uint64 tick_ms = 2;
+}
+
+message ControlHeader {
+  uint64 seq = 1;
+  bytes nonce = 2;
+  uint64 timestamp_ms = 3;
+}
+
+message Acknowledge {
+  ControlHeader header = 1;
+  bool ok = 2;
+  string detail = 3;
+  bytes signature = 4;
+}
+
+message ControlEnvelope {
+  ControlHeader header = 1;
+  ControlPayload payload = 2;
+  bytes signature = 3;
+}
+
+message IdentifyRequest {
+  bool blink = 1;
+  string metadata = 2;
+}
+
+message IdentifyResponse {
+  bool acknowledged = 1;
+  string detail = 2;
+}
+
+message DeviceInfoRequest {}
+
+message DeviceInfo {
+  bytes cid = 1;
+  string manufacturer = 2;
+  string model = 3;
+  string firmware_rev = 4;
+  ProtocolVersion version = 5;
+  OperatingMode mode = 6;
+}
+
+message SetWifiCreds {
+  string ssid = 1;
+  string password = 2;
+}
+
+message UniverseMapping {
+  uint32 universe = 1;
+  uint32 output_port = 2;
+}
+
+message SetUniverseMapping {
+  repeated UniverseMapping mappings = 1;
+}
+
+enum OperatingMode {
+  MODE_NORMAL = 0;
+  MODE_CALIBRATION = 1;
+  MODE_MAINTENANCE = 2;
+}
+
+message SetMode {
+  OperatingMode mode = 1;
+}
+
+message StatusReport {
+  bool healthy = 1;
+  string detail = 2;
+  uint64 uptime_secs = 3;
+}
+
+message RestartRequest {
+  string reason = 1;
+}
+
+message ControlPayload {
+  oneof payload {
+    IdentifyRequest identify = 1;
+    IdentifyResponse identify_response = 2;
+    DeviceInfoRequest get_device_info = 3;
+    DeviceInfo device_info = 4;
+    SetWifiCreds set_wifi_creds = 5;
+    SetUniverseMapping set_universe_mapping = 6;
+    SetMode set_mode = 7;
+    StatusReport status = 8;
+    RestartRequest restart = 9;
+  }
+}
+
 message ProtocolVersion {
   uint32 major = 1;
   uint32 minor = 2;

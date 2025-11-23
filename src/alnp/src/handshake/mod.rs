@@ -1,14 +1,18 @@
 use async_trait::async_trait;
 use rand::{rngs::OsRng, RngCore};
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::crypto::{KeyExchange, KeyExchangeAlgorithm};
+use crate::crypto::KeyExchangeAlgorithm;
 use crate::messages::{
-    ChallengeRequest, ChallengeResponse, ControllerHello, NodeHello, SessionEstablished,
+    Acknowledge, ChallengeRequest, ChallengeResponse, ControlEnvelope, ControllerHello, Keepalive,
+    NodeHello, SessionEstablished,
 };
 
 pub mod client;
 pub mod server;
+pub mod transport;
+pub mod keepalive;
 
 /// Transport abstraction used during the ALNP handshake.
 #[async_trait]
@@ -18,13 +22,16 @@ pub trait HandshakeTransport {
 }
 
 /// Minimal message envelope for the handshake pipeline.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum HandshakeMessage {
     ControllerHello(ControllerHello),
     NodeHello(NodeHello),
     ChallengeRequest(ChallengeRequest),
     ChallengeResponse(ChallengeResponse),
     SessionEstablished(SessionEstablished),
+    Keepalive(Keepalive),
+    Control(ControlEnvelope),
+    Ack(Acknowledge),
 }
 
 /// Context shared between handshake participants.

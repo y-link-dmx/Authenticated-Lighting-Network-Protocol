@@ -5,18 +5,19 @@ use tokio::sync::Mutex;
 use tokio::time;
 
 use super::{HandshakeMessage, HandshakeTransport};
-use crate::messages::Keepalive;
+use crate::messages::{Keepalive, MessageType};
 
 /// Spawns a keepalive task that periodically pushes Keepalive frames on the control channel.
 pub async fn spawn_keepalive<T>(
     transport: Arc<Mutex<T>>,
     interval: Duration,
-    session_id: Option<uuid::Uuid>,
+    session_id: uuid::Uuid,
 ) where
     T: HandshakeTransport + Send + 'static,
 {
     tokio::spawn(async move {
         let payload = HandshakeMessage::Keepalive(Keepalive {
+            message_type: MessageType::Keepalive,
             session_id,
             tick_ms: interval.as_millis() as u64,
         });

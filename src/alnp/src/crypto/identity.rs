@@ -7,6 +7,7 @@ use ed25519_dalek::{Signer, Verifier};
 use thiserror::Error;
 
 /// Ed25519 credentials loaded from PEM files.
+#[derive(Clone)]
 pub struct NodeCredentials {
     pub signing: SigningKey,
     pub verifying: VerifyingKey,

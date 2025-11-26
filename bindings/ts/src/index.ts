@@ -1,106 +1,158 @@
 export type Uuid = string;
 
-export enum OperatingMode {
-  Normal = "Normal",
-  Calibration = "Calibration",
-  Maintenance = "Maintenance",
+export const ALPINE_VERSION = "1.0";
+
+export enum MessageType {
+  AlpineDiscover = "alpine_discover",
+  AlpineDiscoverReply = "alpine_discover_reply",
+  SessionInit = "session_init",
+  SessionAck = "session_ack",
+  SessionReady = "session_ready",
+  SessionComplete = "session_complete",
+  AlpineControl = "alpine_control",
+  AlpineControlAck = "alpine_control_ack",
+  AlpineFrame = "alpine_frame",
+  Keepalive = "keepalive",
 }
 
-export interface DeviceIdentity {
-  cid: Uuid;
-  manufacturer: string;
-  model: string;
-  firmware_rev: string;
+export enum ChannelFormat {
+  U8 = "u8",
+  U16 = "u16",
 }
 
-export interface ProtocolVersion {
-  major: number;
-  minor: number;
-  patch: number;
+export enum ControlOp {
+  GetInfo = "get_info",
+  GetCaps = "get_caps",
+  Identify = "identify",
+  Restart = "restart",
+  GetStatus = "get_status",
+  SetConfig = "set_config",
+  SetMode = "set_mode",
+  TimeSync = "time_sync",
+  Vendor = "vendor",
+}
+
+export enum ErrorCode {
+  DiscoveryInvalidSignature = "DISCOVERY_INVALID_SIGNATURE",
+  DiscoveryNonceMismatch = "DISCOVERY_NONCE_MISMATCH",
+  DiscoveryUnsupportedVersion = "DISCOVERY_UNSUPPORTED_VERSION",
+  HandshakeSignatureInvalid = "HANDSHAKE_SIGNATURE_INVALID",
+  HandshakeKeyDerivationFailed = "HANDSHAKE_KEY_DERIVATION_FAILED",
+  HandshakeTimeout = "HANDSHAKE_TIMEOUT",
+  HandshakeReplay = "HANDSHAKE_REPLAY",
+  SessionExpired = "SESSION_EXPIRED",
+  SessionInvalidToken = "SESSION_INVALID_TOKEN",
+  SessionMacMismatch = "SESSION_MAC_MISMATCH",
+  ControlUnknownOp = "CONTROL_UNKNOWN_OP",
+  ControlPayloadInvalid = "CONTROL_PAYLOAD_INVALID",
+  ControlUnauthorized = "CONTROL_UNAUTHORIZED",
+  StreamBadFormat = "STREAM_BAD_FORMAT",
+  StreamTooLarge = "STREAM_TOO_LARGE",
+  StreamUnsupportedChannelMode = "STREAM_UNSUPPORTED_CHANNEL_MODE",
 }
 
 export interface CapabilitySet {
-  supports_encryption: boolean;
-  supports_redundancy: boolean;
-  max_universes?: number;
-  vendor_data?: string;
+  channel_formats: ChannelFormat[];
+  max_channels: number;
+  grouping_supported: boolean;
+  streaming_supported: boolean;
+  encryption_supported: boolean;
+  vendor_extensions?: Record<string, unknown>;
 }
 
-export interface ControlHeader {
-  seq: number;
-  nonce: Uint8Array;
-  timestamp_ms: number;
+export interface DeviceIdentity {
+  device_id: string;
+  manufacturer_id: string;
+  model_id: string;
+  hardware_rev: string;
+  firmware_rev: string;
 }
 
-export interface IdentifyRequest {
-  blink: boolean;
-  metadata?: string;
+export interface DiscoveryRequest {
+  type: MessageType.AlpineDiscover;
+  version: string;
+  client_nonce: Uint8Array;
+  requested: string[];
 }
 
-export interface IdentifyResponse {
-  acknowledged: boolean;
-  detail?: string;
+export interface DiscoveryReply {
+  type: MessageType.AlpineDiscoverReply;
+  alpine_version: string;
+  device_id: string;
+  manufacturer_id: string;
+  model_id: string;
+  hardware_rev: string;
+  firmware_rev: string;
+  mac: string;
+  server_nonce: Uint8Array;
+  capabilities: CapabilitySet;
+  signature: Uint8Array;
 }
 
-export interface SetWifiCreds {
-  ssid: string;
-  password: string;
+export interface SessionInit {
+  type: MessageType.SessionInit;
+  controller_nonce: Uint8Array;
+  controller_pubkey: Uint8Array;
+  requested: CapabilitySet;
+  session_id: Uuid;
 }
 
-export interface UniverseMapping {
-  universe: number;
-  output_port: number;
+export interface SessionAck {
+  type: MessageType.SessionAck;
+  device_nonce: Uint8Array;
+  device_pubkey: Uint8Array;
+  device_identity: DeviceIdentity;
+  capabilities: CapabilitySet;
+  signature: Uint8Array;
+  session_id: Uuid;
 }
 
-export interface SetUniverseMapping {
-  mappings: UniverseMapping[];
+export interface SessionReady {
+  type: MessageType.SessionReady;
+  session_id: Uuid;
+  mac: Uint8Array;
 }
 
-export interface SetMode {
-  mode: OperatingMode;
-}
-
-export interface StatusReport {
-  healthy: boolean;
-  detail?: string;
-  uptime_secs: number;
-}
-
-export interface RestartRequest {
-  reason?: string;
-}
-
-export type ControlPayload =
-  | { type: "Identify"; body: IdentifyRequest }
-  | { type: "IdentifyResponse"; body: IdentifyResponse }
-  | { type: "GetDeviceInfo" }
-  | { type: "DeviceInfo"; body: DeviceInfo }
-  | { type: "GetCapabilities" }
-  | { type: "Capabilities"; body: CapabilitySet }
-  | { type: "SetWifiCreds"; body: SetWifiCreds }
-  | { type: "SetUniverseMapping"; body: SetUniverseMapping }
-  | { type: "SetMode"; body: SetMode }
-  | { type: "GetStatus" }
-  | { type: "StatusReport"; body: StatusReport }
-  | { type: "Restart"; body: RestartRequest };
-
-export interface DeviceInfo {
-  identity: DeviceIdentity;
-  version: ProtocolVersion;
-  mode: OperatingMode;
+export interface SessionComplete {
+  type: MessageType.SessionComplete;
+  session_id: Uuid;
+  ok: boolean;
+  error?: ErrorCode;
 }
 
 export interface ControlEnvelope {
-  header: ControlHeader;
-  payload: ControlPayload;
-  signature: Uint8Array;
+  type: MessageType.AlpineControl;
+  session_id: Uuid;
+  seq: number;
+  op: ControlOp;
+  payload: unknown;
+  mac: Uint8Array;
 }
 
 export interface Acknowledge {
-  header: ControlHeader;
+  type: MessageType.AlpineControlAck;
+  session_id: Uuid;
+  seq: number;
   ok: boolean;
   detail?: string;
-  signature: Uint8Array;
+  mac: Uint8Array;
+}
+
+export interface FrameEnvelope {
+  type: MessageType.AlpineFrame;
+  session_id: Uuid;
+  timestamp_us: number;
+  priority: number;
+  channel_format: ChannelFormat;
+  channels: number[];
+  groups?: Record<string, number[]>;
+  metadata?: Record<string, unknown>;
+}
+
+export interface Keepalive {
+  type: MessageType.Keepalive;
+  session_id: Uuid;
+  tick_ms: number;
 }
 
 export interface SessionState {

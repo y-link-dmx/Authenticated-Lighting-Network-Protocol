@@ -1,5 +1,11 @@
 use rand::rngs::OsRng;
+use thiserror::Error;
 use x25519_dalek::{PublicKey as X25519PublicKey, SharedSecret, StaticSecret as X25519Secret};
+
+use chacha20poly1305::aead::{AeadInPlace, KeyInit};
+use chacha20poly1305::{ChaCha20Poly1305, Key};
+use hkdf::Hkdf;
+use sha2::Sha256;
 
 pub mod identity;
 
@@ -15,14 +21,15 @@ pub enum KeyExchangeAlgorithm {
 #[derive(Debug, Clone)]
 pub struct SessionKeys {
     pub shared_secret: Vec<u8>,
-    pub stream_key: Option<Vec<u8>>,
+    pub control_key: [u8; 32],
+    pub stream_key: [u8; 32],
 }
 
 /// Behavior required to complete the handshake key agreement.
 pub trait KeyExchange {
     fn algorithm(&self) -> KeyExchangeAlgorithm;
     fn public_key(&self) -> Vec<u8>;
-    fn derive_shared(&self, peer_public_key: &[u8]) -> SessionKeys;
+    fn derive_keys(&self, peer_public_key: &[u8], salt: &[u8]) -> Result<SessionKeys, CryptoError>;
 }
 
 /// Lightweight placeholder for X25519; replace with a real implementation later.
@@ -54,17 +61,27 @@ impl KeyExchange for X25519KeyExchange {
         self.public_key.to_bytes().to_vec()
     }
 
-    fn derive_shared(&self, peer_public_key: &[u8]) -> SessionKeys {
+    fn derive_keys(&self, peer_public_key: &[u8], salt: &[u8]) -> Result<SessionKeys, CryptoError> {
         let peer_bytes: [u8; 32] = peer_public_key
             .try_into()
-            .expect("peer public key must be 32 bytes");
+            .map_err(|_| CryptoError::InvalidPeerKey)?;
         let peer_pk = X25519PublicKey::from(peer_bytes);
         let shared_secret: SharedSecret = self.private_key.diffie_hellman(&peer_pk);
-        let shared_secret = shared_secret.as_bytes().to_vec();
-        SessionKeys {
-            shared_secret,
-            stream_key: None,
-        }
+        let shared_secret_bytes = shared_secret.as_bytes().to_vec();
+
+        let hkdf = Hkdf::<Sha256>::new(Some(salt), shared_secret.as_bytes());
+        let mut control_key = [0u8; 32];
+        let mut stream_key = [0u8; 32];
+        hkdf.expand(b"alpine-control", &mut control_key)
+            .map_err(|e| CryptoError::Hkdf(format!("{:?}", e)))?;
+        hkdf.expand(b"alpine-stream", &mut stream_key)
+            .map_err(|e| CryptoError::Hkdf(format!("{:?}", e)))?;
+
+        Ok(SessionKeys {
+            shared_secret: shared_secret_bytes,
+            control_key,
+            stream_key,
+        })
     }
 }
 
@@ -72,4 +89,40 @@ impl KeyExchange for X25519KeyExchange {
 pub trait TlsWrapper {
     fn wrap_stream(&self, plaintext: &[u8]) -> Vec<u8>;
     fn unwrap_stream(&self, ciphertext: &[u8]) -> Vec<u8>;
+}
+
+/// Cryptographic helper errors.
+#[derive(Debug, Error)]
+pub enum CryptoError {
+    #[error("invalid peer public key")]
+    InvalidPeerKey,
+    #[error("hkdf expand error: {0}")]
+    Hkdf(String),
+    #[error("aead error: {0}")]
+    Aead(String),
+}
+
+/// Compute an authentication tag for a control payload using the derived control key.
+pub fn compute_mac(keys: &SessionKeys, seq: u64, payload: &[u8], aad: &[u8]) -> Result<Vec<u8>, CryptoError> {
+    let key = Key::from_slice(&keys.control_key);
+    let cipher = ChaCha20Poly1305::new(key);
+    let mut nonce = [0u8; 12];
+    nonce[..8].copy_from_slice(&seq.to_be_bytes());
+    let mut buffer = payload.to_vec();
+    let tag = cipher
+        .encrypt_in_place_detached(&nonce.into(), aad, &mut buffer)
+        .map_err(|e| CryptoError::Aead(e.to_string()))?;
+    Ok(tag.to_vec())
+}
+
+/// Validate an authentication tag for a control payload.
+pub fn verify_mac(keys: &SessionKeys, seq: u64, payload: &[u8], aad: &[u8], mac: &[u8]) -> bool {
+    const CHACHA_TAG_SIZE: usize = 16;
+    if mac.len() != CHACHA_TAG_SIZE {
+        return false;
+    }
+    match compute_mac(keys, seq, payload, aad) {
+        Ok(expected) => expected == mac,
+        Err(_) => false,
+    }
 }

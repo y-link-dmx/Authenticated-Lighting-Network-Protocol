@@ -3,10 +3,10 @@ use rand::{rngs::OsRng, RngCore};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::crypto::KeyExchangeAlgorithm;
+use crate::crypto::{KeyExchangeAlgorithm, SessionKeys};
 use crate::messages::{
-    Acknowledge, ChallengeRequest, ChallengeResponse, ControlEnvelope, ControllerHello, Keepalive,
-    NodeHello, SessionEstablished,
+    Acknowledge, ControlEnvelope, Keepalive, SessionAck, SessionComplete, SessionEstablished,
+    SessionInit, SessionReady,
 };
 
 pub mod client;
@@ -24,10 +24,10 @@ pub trait HandshakeTransport {
 /// Minimal message envelope for the handshake pipeline.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum HandshakeMessage {
-    ControllerHello(ControllerHello),
-    NodeHello(NodeHello),
-    ChallengeRequest(ChallengeRequest),
-    ChallengeResponse(ChallengeResponse),
+    SessionInit(SessionInit),
+    SessionAck(SessionAck),
+    SessionReady(SessionReady),
+    SessionComplete(SessionComplete),
     SessionEstablished(SessionEstablished),
     Keepalive(Keepalive),
     Control(ControlEnvelope),
@@ -74,12 +74,21 @@ pub fn new_nonce() -> [u8; 32] {
 /// Shared behavior between controller and node handshake roles.
 #[async_trait]
 pub trait HandshakeParticipant {
-    async fn run<T: HandshakeTransport + Send>(&self, transport: &mut T)
-        -> Result<SessionEstablished, HandshakeError>;
+    async fn run<T: HandshakeTransport + Send>(
+        &self,
+        transport: &mut T,
+    ) -> Result<HandshakeOutcome, HandshakeError>;
 }
 
 /// Minimal authenticator stub for challenge validation.
 pub trait ChallengeAuthenticator {
     fn sign_challenge(&self, nonce: &[u8]) -> Vec<u8>;
     fn verify_challenge(&self, nonce: &[u8], signature: &[u8]) -> bool;
+}
+
+/// Output returned by handshake drivers.
+#[derive(Debug, Clone)]
+pub struct HandshakeOutcome {
+    pub established: SessionEstablished,
+    pub keys: SessionKeys,
 }

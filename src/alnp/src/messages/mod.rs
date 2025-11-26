@@ -1,206 +1,256 @@
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use uuid::Uuid;
 
-/// Standard control-plane header for replay protection and ordering.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ControlHeader {
-    pub seq: u64,
-    pub nonce: Vec<u8>,
-    pub timestamp_ms: u64,
+pub const ALPINE_VERSION: &str = "1.0";
+
+/// Common envelope type identifiers used across CBOR payloads.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum MessageType {
+    AlpineDiscover,
+    AlpineDiscoverReply,
+    SessionInit,
+    SessionAck,
+    SessionReady,
+    SessionComplete,
+    AlpineControl,
+    AlpineControlAck,
+    AlpineFrame,
+    Keepalive,
 }
 
-/// Signed acknowledge wrapper.
+/// Discovery request broadcast by controllers.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct Acknowledge {
-    pub header: ControlHeader,
-    pub ok: bool,
-    pub detail: Option<String>,
-    pub signature: Vec<u8>,
+pub struct DiscoveryRequest {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub version: String,
+    pub client_nonce: Vec<u8>,
+    pub requested: Vec<String>,
 }
 
-/// Envelope that carries a control payload plus signature for replay protection.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ControlEnvelope {
-    pub header: ControlHeader,
-    pub payload: ControlPayload,
-    pub signature: Vec<u8>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(tag = "type", content = "body")]
-pub enum ControlPayload {
-    Identify(IdentifyRequest),
-    IdentifyResponse(IdentifyResponse),
-    GetDeviceInfo(DeviceInfoRequest),
-    DeviceInfo(DeviceInfo),
-    GetCapabilities,
-    Capabilities(CapabilitySet),
-    SetWifiCreds(SetWifiCreds),
-    SetUniverseMapping(SetUniverseMapping),
-    SetMode(SetMode),
-    GetStatus,
-    StatusReport(StatusReport),
-    Restart(RestartRequest),
-}
-
-/// ALNP protocol semantic version.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ProtocolVersion {
-    pub major: u16,
-    pub minor: u16,
-    pub patch: u16,
-}
-
-impl ProtocolVersion {
-    pub const fn new(major: u16, minor: u16, patch: u16) -> Self {
-        Self { major, minor, patch }
-    }
-
-    pub const fn alnp_v1() -> Self {
-        Self::new(1, 0, 0)
+impl DiscoveryRequest {
+    pub fn new(requested: Vec<String>, client_nonce: Vec<u8>) -> Self {
+        Self {
+            message_type: MessageType::AlpineDiscover,
+            version: ALPINE_VERSION.to_string(),
+            client_nonce,
+            requested,
+        }
     }
 }
 
-/// Device identity tuple exchanged during handshake.
+/// Discovery reply signed by the device.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiscoveryReply {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub alpine_version: String,
+    pub device_id: String,
+    pub manufacturer_id: String,
+    pub model_id: String,
+    pub hardware_rev: String,
+    pub firmware_rev: String,
+    pub mac: String,
+    pub server_nonce: Vec<u8>,
+    pub capabilities: CapabilitySet,
+    pub signature: Vec<u8>,
+}
+
+impl DiscoveryReply {
+    pub fn new(identity: &DeviceIdentity, mac: String, server_nonce: Vec<u8>, capabilities: CapabilitySet, signature: Vec<u8>) -> Self {
+        Self {
+            message_type: MessageType::AlpineDiscoverReply,
+            alpine_version: ALPINE_VERSION.to_string(),
+            device_id: identity.device_id.clone(),
+            manufacturer_id: identity.manufacturer_id.clone(),
+            model_id: identity.model_id.clone(),
+            hardware_rev: identity.hardware_rev.clone(),
+            firmware_rev: identity.firmware_rev.clone(),
+            mac,
+            server_nonce,
+            capabilities,
+            signature,
+        }
+    }
+}
+
+/// Device identity tuple exchanged during discovery and handshake.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct DeviceIdentity {
-    pub cid: Uuid,
-    pub manufacturer: String,
-    pub model: String,
+    pub device_id: String,
+    pub manufacturer_id: String,
+    pub model_id: String,
+    pub hardware_rev: String,
     pub firmware_rev: String,
 }
 
-/// Declared capabilities modeled loosely after RDMnet client connect.
+/// Declared capabilities as defined by the spec.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct CapabilitySet {
-    pub supports_encryption: bool,
-    pub supports_redundancy: bool,
-    pub max_universes: Option<u16>,
-    pub vendor_data: Option<String>,
+    pub channel_formats: Vec<ChannelFormat>,
+    pub max_channels: u32,
+    pub grouping_supported: bool,
+    pub streaming_supported: bool,
+    pub encryption_supported: bool,
+    pub vendor_extensions: Option<HashMap<String, serde_json::Value>>,
 }
 
-/// Controller -> Node hello message.
+impl Default for CapabilitySet {
+    fn default() -> Self {
+        Self {
+            channel_formats: vec![ChannelFormat::U8],
+            max_channels: 512,
+            grouping_supported: false,
+            streaming_supported: true,
+            encryption_supported: true,
+            vendor_extensions: None,
+        }
+    }
+}
+
+/// Supported channel encodings for frames.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum ChannelFormat {
+    U8,
+    U16,
+}
+
+/// Handshake session_init payload.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ControllerHello {
-    pub controller: DeviceIdentity,
-    pub requested_version: ProtocolVersion,
+pub struct SessionInit {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub controller_nonce: Vec<u8>,
+    pub controller_pubkey: Vec<u8>,
+    pub requested: CapabilitySet,
+    pub session_id: Uuid,
+}
+
+/// Handshake session_ack payload.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct SessionAck {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub device_nonce: Vec<u8>,
+    pub device_pubkey: Vec<u8>,
+    pub device_identity: DeviceIdentity,
     pub capabilities: CapabilitySet,
-    pub key_exchange: KeyExchangeProposal,
-}
-
-/// Node -> Controller hello message.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct NodeHello {
-    pub node: DeviceIdentity,
-    pub supported_version: ProtocolVersion,
-    pub capabilities: CapabilitySet,
-    pub key_exchange: KeyExchangeProposal,
-    pub auth_required: bool,
-}
-
-/// Challenge issued by node to controller.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ChallengeRequest {
-    pub nonce: Vec<u8>,
-    pub controller_expected: Uuid,
-    pub signature_scheme: SignatureScheme,
-}
-
-/// Response from controller to prove identity.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ChallengeResponse {
-    pub nonce: Vec<u8>,
     pub signature: Vec<u8>,
-    pub key_confirmation: Option<Vec<u8>>,
+    pub session_id: Uuid,
 }
 
-/// Session ready marker.
+/// Controller readiness marker after keys are derived.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct SessionReady {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub session_id: Uuid,
+    pub mac: Vec<u8>,
+}
+
+/// Device completion acknowledgement.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct SessionComplete {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub session_id: Uuid,
+    pub ok: bool,
+    pub error: Option<ErrorCode>,
+}
+
+/// Internal representation of an established session derived from the handshake.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct SessionEstablished {
     pub session_id: Uuid,
-    pub agreed_version: ProtocolVersion,
-    pub stream_key: Option<Vec<u8>>,
-    pub expires_at_epoch_ms: Option<u64>,
+    pub controller_nonce: Vec<u8>,
+    pub device_nonce: Vec<u8>,
+    pub capabilities: CapabilitySet,
+    pub device_identity: DeviceIdentity,
+}
+
+/// Control-plane envelope with authenticated payload.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct ControlEnvelope {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub session_id: Uuid,
+    pub seq: u64,
+    pub op: ControlOp,
+    pub payload: serde_json::Value,
+    pub mac: Vec<u8>,
+}
+
+/// Ack for control-plane operations.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct Acknowledge {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub session_id: Uuid,
+    pub seq: u64,
+    pub ok: bool,
+    pub detail: Option<String>,
+    pub mac: Vec<u8>,
+}
+
+/// Control operations enumerated by the spec.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ControlOp {
+    GetInfo,
+    GetCaps,
+    Identify,
+    Restart,
+    GetStatus,
+    SetConfig,
+    SetMode,
+    TimeSync,
+    Vendor,
+}
+
+/// Real-time frame envelope.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct FrameEnvelope {
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub session_id: Uuid,
+    pub timestamp_us: u64,
+    pub priority: u8,
+    pub channel_format: ChannelFormat,
+    pub channels: Vec<u16>,
+    pub groups: Option<HashMap<String, Vec<u16>>>,
+    pub metadata: Option<HashMap<String, serde_json::Value>>,
 }
 
 /// Control-plane keepalive frame to detect dead sessions.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Keepalive {
-    pub session_id: Option<Uuid>,
+    #[serde(rename = "type")]
+    pub message_type: MessageType,
+    pub session_id: Uuid,
     pub tick_ms: u64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct IdentifyRequest {
-    pub blink: bool,
-    pub metadata: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct IdentifyResponse {
-    pub acknowledged: bool,
-    pub detail: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct DeviceInfoRequest;
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct DeviceInfo {
-    pub identity: DeviceIdentity,
-    pub version: ProtocolVersion,
-    pub mode: OperatingMode,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct SetWifiCreds {
-    pub ssid: String,
-    pub password: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct UniverseMapping {
-    pub universe: u16,
-    pub output_port: u8,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct SetUniverseMapping {
-    pub mappings: Vec<UniverseMapping>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub enum OperatingMode {
-    Normal,
-    Calibration,
-    Maintenance,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct SetMode {
-    pub mode: OperatingMode,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct StatusReport {
-    pub healthy: bool,
-    pub detail: Option<String>,
-    pub uptime_secs: u64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct RestartRequest {
-    pub reason: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct KeyExchangeProposal {
-    pub algorithm: String,
-    pub public_key: Vec<u8>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub enum SignatureScheme {
-    Ed25519,
-    EcdsaP256,
+/// Standard error codes from docs/errors.md.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ErrorCode {
+    DiscoveryInvalidSignature,
+    DiscoveryNonceMismatch,
+    DiscoveryUnsupportedVersion,
+    HandshakeSignatureInvalid,
+    HandshakeKeyDerivationFailed,
+    HandshakeTimeout,
+    HandshakeReplay,
+    SessionExpired,
+    SessionInvalidToken,
+    SessionMacMismatch,
+    ControlUnknownOp,
+    ControlPayloadInvalid,
+    ControlUnauthorized,
+    StreamBadFormat,
+    StreamTooLarge,
+    StreamUnsupportedChannelMode,
 }

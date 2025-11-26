@@ -1,81 +1,102 @@
-use std::sync::Arc;
+use std::error::Error;
+use std::net::SocketAddr;
 
-use alnp::handshake::{HandshakeError, HandshakeMessage, HandshakeTransport};
-use alnp::handshake::keepalive::spawn_keepalive;
-use alnp::session::{example_controller_session, example_node_session, LoopbackTransport};
-use serde_json;
-use tokio::sync::Mutex;
+use async_trait::async_trait;
+use serde_cbor;
+use tokio::net::UdpSocket;
 
-use crate::support::{MockUdp, UdpLike};
+use alpine::handshake::{HandshakeContext, HandshakeError, HandshakeMessage, HandshakeTransport};
+use alpine::messages::CapabilitySet;
+use alpine::session::{AlnpSession, StaticKeyAuthenticator};
+use alpine::crypto::X25519KeyExchange;
+use alpine::messages::DeviceIdentity;
+use uuid::Uuid;
 
-pub struct MockHandshakeTransport {
-    udp: Arc<dyn UdpLike>,
+struct UdpHandshakeTransport {
+    socket: UdpSocket,
+    peer: SocketAddr,
+    buf_size: usize,
 }
 
-impl MockHandshakeTransport {
-    pub fn new(udp: Arc<dyn UdpLike>) -> Self {
-        Self { udp }
+impl UdpHandshakeTransport {
+    fn new(socket: UdpSocket, peer: SocketAddr, buf_size: usize) -> Self {
+        Self {
+            socket,
+            peer,
+            buf_size,
+        }
     }
 }
 
-#[async_trait::async_trait]
-impl HandshakeTransport for MockHandshakeTransport {
+#[async_trait]
+impl HandshakeTransport for UdpHandshakeTransport {
     async fn send(&mut self, msg: HandshakeMessage) -> Result<(), HandshakeError> {
-        let bytes = serde_json::to_vec(&msg).map_err(|e| HandshakeError::Transport(e.to_string()))?;
-        self.udp.send(bytes).await;
+        let bytes = serde_cbor::to_vec(&msg)
+            .map_err(|e| HandshakeError::Protocol(format!("encode: {}", e)))?;
+        self.socket
+            .send_to(&bytes, self.peer)
+            .await
+            .map_err(|e| HandshakeError::Transport(e.to_string()))?;
         Ok(())
     }
 
     async fn recv(&mut self) -> Result<HandshakeMessage, HandshakeError> {
-        let raw = self
-            .udp
-            .recv()
+        let mut buf = vec![0u8; self.buf_size];
+        let (len, _) = self
+            .socket
+            .recv_from(&mut buf)
             .await
-            .ok_or_else(|| HandshakeError::Transport("channel closed".into()))?;
-        serde_json::from_slice(&raw).map_err(|e| HandshakeError::Transport(e.to_string()))
+            .map_err(|e| HandshakeError::Transport(e.to_string()))?;
+        serde_cbor::from_slice(&buf[..len])
+            .map_err(|e| HandshakeError::Protocol(format!("decode: {}", e)))
     }
 }
 
-/// Build controller/node sessions over mock UDP.
-pub async fn make_sessions(
-    client_udp: Arc<dyn UdpLike>,
-    server_udp: Arc<dyn UdpLike>,
-) -> (alnp::session::AlnpSession, alnp::session::AlnpSession) {
-    let client_id = alnp::messages::DeviceIdentity {
-        cid: uuid::Uuid::new_v4(),
-        manufacturer: "ALNP".into(),
-        model: "Controller".into(),
+pub fn make_identity(prefix: &str) -> DeviceIdentity {
+    DeviceIdentity {
+        device_id: Uuid::new_v4().to_string(),
+        manufacturer_id: format!("{prefix}-manu"),
+        model_id: format!("{prefix}-model"),
+        hardware_rev: "rev1".into(),
         firmware_rev: "1.0.0".into(),
-    };
-    let node_id = alnp::messages::DeviceIdentity {
-        cid: uuid::Uuid::new_v4(),
-        manufacturer: "ALNP".into(),
-        model: "Node".into(),
-        firmware_rev: "1.0.0".into(),
-    };
-
-    let mut c_transport = MockHandshakeTransport::new(client_udp.clone());
-    let mut n_transport = MockHandshakeTransport::new(server_udp.clone());
-
-    let controller = tokio::spawn(async move {
-        example_controller_session(client_id, &mut c_transport).await.unwrap()
-    });
-
-    let node = tokio::spawn(async move {
-        example_node_session(node_id, &mut n_transport).await.unwrap()
-    });
-
-    let controller = controller.await.unwrap();
-    let node = node.await.unwrap();
-    (controller, node)
+    }
 }
 
-/// Helper to spawn keepalive tasks on a given transport.
-pub async fn start_keepalive<T: HandshakeTransport + Send + 'static>(
-    transport: T,
-    session_id: Option<uuid::Uuid>,
-    interval_ms: u64,
-) {
-    let shared = Arc::new(Mutex::new(transport));
-    spawn_keepalive(shared, std::time::Duration::from_millis(interval_ms), session_id).await;
+pub async fn run_udp_handshake() -> Result<(AlnpSession, AlnpSession), Box<dyn Error>> {
+    let controller_socket = UdpSocket::bind(("127.0.0.1", 0)).await?;
+    let node_socket = UdpSocket::bind(("127.0.0.1", 0)).await?;
+    let controller_addr = controller_socket.local_addr()?;
+    let node_addr = node_socket.local_addr()?;
+
+    let controller_task = tokio::spawn(async move {
+        let mut transport =
+            UdpHandshakeTransport::new(controller_socket, node_addr, 4096);
+        AlnpSession::connect(
+            make_identity("controller"),
+            CapabilitySet::default(),
+            StaticKeyAuthenticator::default(),
+            X25519KeyExchange::new(),
+            HandshakeContext::default(),
+            &mut transport,
+        )
+        .await
+    });
+
+    let node_task = tokio::spawn(async move {
+        let mut transport = UdpHandshakeTransport::new(node_socket, controller_addr, 4096);
+        AlnpSession::accept(
+            make_identity("node"),
+            CapabilitySet::default(),
+            StaticKeyAuthenticator::default(),
+            X25519KeyExchange::new(),
+            HandshakeContext::default(),
+            &mut transport,
+        )
+        .await
+    });
+
+    let (controller_res, node_res) = tokio::join!(controller_task, node_task);
+    let controller_session = controller_res??;
+    let node_session = node_res??;
+    Ok((controller_session, node_session))
 }

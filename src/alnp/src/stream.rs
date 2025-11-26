@@ -1,158 +1,119 @@
-mod sacn_adapter;
-pub use sacn_adapter::CSacnAdapter;
-
 use std::collections::HashMap;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use thiserror::Error;
 
-use crate::messages::OperatingMode;
+use crate::messages::{ChannelFormat, FrameEnvelope, MessageType};
 use crate::session::{AlnpSession, JitterStrategy};
 
-/// Minimal adapter that wraps the existing sACN transport layer.
-pub trait SacnStreamAdapter: Send + Sync {
-    fn send_universe(&self, universe: u16, payload: &[u8]) -> Result<(), String>;
-    fn subscribe_universe(&self, universe: u16) -> Result<(), String>;
-    fn unsubscribe_universe(&self, universe: u16) -> Result<(), String> {
-        let _ = universe;
-        Ok(())
-    }
+/// Minimal transport for sending serialized ALPINE frames (UDP/QUIC left to the caller).
+pub trait FrameTransport: Send + Sync {
+    fn send_frame(&self, bytes: &[u8]) -> Result<(), String>;
 }
 
 #[derive(Debug)]
-pub struct AlnpStream<T: SacnStreamAdapter> {
+pub struct AlnpStream<T: FrameTransport> {
     session: AlnpSession,
-    sacn: T,
-    last_frames: parking_lot::Mutex<HashMap<u16, Vec<u8>>>,
-    sequence_numbers: parking_lot::Mutex<HashMap<u16, u8>>,
-    enabled_universes: parking_lot::Mutex<HashMap<u16, bool>>,
-    current_mode: parking_lot::Mutex<OperatingMode>,
+    transport: T,
+    last_frame: parking_lot::Mutex<Option<FrameEnvelope>>,
 }
 
 #[derive(Debug, Error)]
 pub enum StreamError {
     #[error("sender not authenticated")]
     NotAuthenticated,
-    #[error("sACN transport error: {0}")]
+    #[error("transport error: {0}")]
     Transport(String),
     #[error("streaming disabled")]
     StreamingDisabled,
+    #[error("no session available")]
+    MissingSession,
 }
 
-impl<T: SacnStreamAdapter> AlnpStream<T> {
-    pub fn new(session: AlnpSession, sacn: T) -> Self {
+impl<T: FrameTransport> AlnpStream<T> {
+    pub fn new(session: AlnpSession, transport: T) -> Self {
         Self {
             session,
-            sacn,
-            last_frames: parking_lot::Mutex::new(HashMap::new()),
-            sequence_numbers: parking_lot::Mutex::new(HashMap::new()),
-            enabled_universes: parking_lot::Mutex::new(HashMap::new()),
-            current_mode: parking_lot::Mutex::new(OperatingMode::Normal),
+            transport,
+            last_frame: parking_lot::Mutex::new(None),
         }
     }
 
-    pub fn set_mode(&self, mode: OperatingMode) {
-        *self.current_mode.lock() = mode.clone();
-        let allow_stream = matches!(mode, OperatingMode::Normal);
-        self.session.set_streaming_enabled(allow_stream);
-    }
-
-    pub fn enable_universe(&self, universe: u16) {
-        self.enabled_universes.lock().insert(universe, true);
-    }
-
-    pub fn disable_universe(&self, universe: u16) {
-        self.enabled_universes.lock().insert(universe, false);
-        let _ = self.sacn.unsubscribe_universe(universe);
-    }
-
-    pub fn send(&self, universe: u16, payload: &[u8]) -> Result<(), StreamError> {
-        let _session = self
+    /// Sends a streaming frame built from raw channel data.
+    pub fn send(
+        &self,
+        channel_format: ChannelFormat,
+        channels: Vec<u16>,
+        priority: u8,
+        groups: Option<HashMap<String, Vec<u16>>>,
+        metadata: Option<HashMap<String, serde_json::Value>>,
+    ) -> Result<(), StreamError> {
+        let established = self
             .session
             .ensure_streaming_ready()
             .map_err(|_| StreamError::NotAuthenticated)?;
-
-        self.session.mark_streaming();
-
         if !self.session.streaming_enabled() {
             return Err(StreamError::StreamingDisabled);
         }
 
-        if !self.enabled_universes.lock().get(&universe).cloned().unwrap_or(true) {
-            return Err(StreamError::StreamingDisabled);
-        }
+        let adjusted_channels = self.apply_jitter(&channels);
 
-        let seq = {
-            let mut seqs = self.sequence_numbers.lock();
-            let entry = seqs.entry(universe).or_insert(0);
-            *entry = entry.wrapping_add(1);
-            *entry
+        let envelope = FrameEnvelope {
+            message_type: MessageType::AlpineFrame,
+            session_id: established.session_id,
+            timestamp_us: Self::now_us(),
+            priority,
+            channel_format,
+            channels: adjusted_channels,
+            groups,
+            metadata,
         };
 
-        // Sequence rollover guard: if wraps to 0, ensure next send resets last frame to avoid jitter.
-        if seq == 0 {
-            self.last_frames.lock().remove(&universe);
-        }
-
-        let payload = self.apply_jitter(universe, payload);
-
-        self.sacn
-            .send_universe(universe, &payload)
+        let bytes = serde_cbor::to_vec(&envelope)
+            .map_err(|e| StreamError::Transport(format!("encode: {}", e)))?;
+        self.transport
+            .send_frame(&bytes)
             .map_err(StreamError::Transport)?;
-        self.last_frames
-            .lock()
-            .insert(universe, payload.to_vec());
+        *self.last_frame.lock() = Some(envelope);
         Ok(())
     }
 
-    pub fn subscribe(&self, universe: u16) -> Result<(), StreamError> {
-        self.session
-            .ensure_streaming_ready()
-            .map_err(|_| StreamError::NotAuthenticated)?;
-        self.sacn
-            .subscribe_universe(universe)
-            .map_err(StreamError::Transport)?;
-        self.enable_universe(universe);
-        Ok(())
-    }
-
-    pub fn fail_closed(&self, reason: &str) {
-        self.session.fail(reason.to_string());
-        let mut enabled = self.enabled_universes.lock();
-        for (u, flag) in enabled.iter_mut() {
-            if *flag {
-                let _ = self.sacn.unsubscribe_universe(*u);
-            }
-            *flag = false;
-        }
-    }
-
-    fn apply_jitter(&self, universe: u16, payload: &[u8]) -> Vec<u8> {
+    fn apply_jitter(&self, channels: &[u16]) -> Vec<u16> {
         match self.session.jitter_strategy() {
             JitterStrategy::HoldLast => {
-                if payload.is_empty() {
-                    if let Some(last) = self.last_frames.lock().get(&universe) {
-                        return last.clone();
+                if channels.is_empty() {
+                    if let Some(last) = self.last_frame.lock().as_ref() {
+                        return last.channels.clone();
                     }
                 }
-                payload.to_vec()
+                channels.to_vec()
             }
             JitterStrategy::Drop => {
-                if payload.is_empty() {
+                if channels.is_empty() {
                     Vec::new()
                 } else {
-                    payload.to_vec()
+                    channels.to_vec()
                 }
             }
             JitterStrategy::Lerp => {
-                let mut blended = payload.to_vec();
-                if let Some(last) = self.last_frames.lock().get(&universe) {
-                    let len = blended.len().min(last.len());
-                    for i in 0..len {
-                        blended[i] = ((last[i] as u16 + blended[i] as u16) / 2) as u8;
+                if let Some(last) = self.last_frame.lock().as_ref() {
+                    let mut blended = Vec::with_capacity(channels.len());
+                    for (idx, value) in channels.iter().enumerate() {
+                        let prev = last.channels.get(idx).cloned().unwrap_or(0);
+                        blended.push(((prev as u32 + *value as u32) / 2) as u16);
                     }
+                    blended
+                } else {
+                    channels.to_vec()
                 }
-                blended
             }
         }
+    }
+
+    fn now_us() -> u64 {
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_micros() as u64
     }
 }

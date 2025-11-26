@@ -4,12 +4,12 @@ use std::time::{Duration, Instant};
 use async_trait::async_trait;
 use ed25519_dalek::Signature;
 
-use crate::crypto::{identity::NodeCredentials, KeyExchange, X25519KeyExchange};
+use crate::crypto::{identity::NodeCredentials, KeyExchange, SessionKeys, X25519KeyExchange};
 use crate::handshake::{
     client::ClientHandshake, server::ServerHandshake, ChallengeAuthenticator, HandshakeContext,
-    HandshakeError, HandshakeParticipant, HandshakeTransport,
+    HandshakeError, HandshakeOutcome, HandshakeParticipant, HandshakeTransport,
 };
-use crate::messages::{CapabilitySet, DeviceIdentity, ProtocolVersion, SessionEstablished};
+use crate::messages::{CapabilitySet, DeviceIdentity, SessionEstablished};
 
 pub mod state;
 use state::{SessionState, SessionStateError};
@@ -42,6 +42,7 @@ pub struct AlnpSession {
     streaming_enabled: Arc<Mutex<bool>>,
     timeout: Duration,
     session_established: Arc<Mutex<Option<SessionEstablished>>>,
+    session_keys: Arc<Mutex<Option<SessionKeys>>>,
 }
 
 impl AlnpSession {
@@ -54,11 +55,16 @@ impl AlnpSession {
             streaming_enabled: Arc::new(Mutex::new(true)),
             timeout: Duration::from_secs(10),
             session_established: Arc::new(Mutex::new(None)),
+            session_keys: Arc::new(Mutex::new(None)),
         }
     }
 
     pub fn established(&self) -> Option<SessionEstablished> {
         self.session_established.lock().ok().and_then(|s| s.clone())
+    }
+
+    pub fn keys(&self) -> Option<SessionKeys> {
+        self.session_keys.lock().ok().and_then(|k| k.clone())
     }
 
     pub fn state(&self) -> SessionState {
@@ -154,10 +160,18 @@ impl AlnpSession {
         self.streaming_enabled.lock().map(|f| *f).unwrap_or(false)
     }
 
+    fn apply_outcome(&self, outcome: HandshakeOutcome) {
+        if let Ok(mut guard) = self.session_established.lock() {
+            *guard = Some(outcome.established);
+        }
+        if let Ok(mut guard) = self.session_keys.lock() {
+            *guard = Some(outcome.keys);
+        }
+    }
+
     pub async fn connect<T, A, K>(
         identity: DeviceIdentity,
         capabilities: CapabilitySet,
-        protocol_version: ProtocolVersion,
         authenticator: A,
         key_exchange: K,
         context: HandshakeContext,
@@ -173,29 +187,25 @@ impl AlnpSession {
         let driver = ClientHandshake {
             identity,
             capabilities,
-            protocol_version,
             authenticator,
             key_exchange,
             context,
         };
 
-        let established = driver.run(transport).await?;
+        let outcome = driver.run(transport).await?;
         session.transition(SessionState::Authenticated {
             since: Instant::now(),
         })?;
         session.transition(SessionState::Ready {
             since: Instant::now(),
         })?;
-        if let Ok(mut guard) = session.session_established.lock() {
-            *guard = Some(established);
-        }
+        session.apply_outcome(outcome);
         Ok(session)
     }
 
     pub async fn accept<T, A, K>(
         identity: DeviceIdentity,
         capabilities: CapabilitySet,
-        protocol_version: ProtocolVersion,
         authenticator: A,
         key_exchange: K,
         context: HandshakeContext,
@@ -211,22 +221,19 @@ impl AlnpSession {
         let driver = ServerHandshake {
             identity,
             capabilities,
-            protocol_version,
             authenticator,
             key_exchange,
             context,
         };
 
-        let established = driver.run(transport).await?;
+        let outcome = driver.run(transport).await?;
         session.transition(SessionState::Authenticated {
             since: Instant::now(),
         })?;
         session.transition(SessionState::Ready {
             since: Instant::now(),
         })?;
-        if let Ok(mut guard) = session.session_established.lock() {
-            *guard = Some(established);
-        }
+        session.apply_outcome(outcome);
         Ok(session)
     }
 }
@@ -322,13 +329,7 @@ pub async fn example_controller_session<T: HandshakeTransport + Send>(
 ) -> Result<AlnpSession, HandshakeError> {
     AlnpSession::connect(
         identity,
-        CapabilitySet {
-            supports_encryption: true,
-            supports_redundancy: false,
-            max_universes: Some(16),
-            vendor_data: None,
-        },
-        ProtocolVersion::alnp_v1(),
+        CapabilitySet::default(),
         StaticKeyAuthenticator::default(),
         X25519KeyExchange::new(),
         HandshakeContext::default(),
@@ -344,13 +345,7 @@ pub async fn example_node_session<T: HandshakeTransport + Send>(
 ) -> Result<AlnpSession, HandshakeError> {
     AlnpSession::accept(
         identity,
-        CapabilitySet {
-            supports_encryption: true,
-            supports_redundancy: true,
-            max_universes: Some(512),
-            vendor_data: None,
-        },
-        ProtocolVersion::alnp_v1(),
+        CapabilitySet::default(),
         StaticKeyAuthenticator::default(),
         X25519KeyExchange::new(),
         HandshakeContext::default(),

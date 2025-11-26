@@ -1,24 +1,26 @@
-use std::collections::HashSet;
 use std::net::SocketAddr;
 use std::time::Duration;
 
 use async_trait::async_trait;
-use rand::{rngs::OsRng, RngCore};
 use tokio::net::UdpSocket;
 use tokio::time;
 
 use super::{HandshakeError, HandshakeMessage, HandshakeTransport};
 use crate::messages::{Acknowledge, ControlEnvelope};
 
-/// JSON-over-UDP transport for control-plane exchange; lightweight and easy to test.
-pub struct JsonUdpTransport {
+/// CBOR-over-UDP transport for handshake and control-plane exchange.
+pub struct CborUdpTransport {
     socket: UdpSocket,
     peer: SocketAddr,
     max_size: usize,
 }
 
-impl JsonUdpTransport {
-    pub async fn bind(local: SocketAddr, peer: SocketAddr, max_size: usize) -> Result<Self, HandshakeError> {
+impl CborUdpTransport {
+    pub async fn bind(
+        local: SocketAddr,
+        peer: SocketAddr,
+        max_size: usize,
+    ) -> Result<Self, HandshakeError> {
         let socket = UdpSocket::bind(local)
             .await
             .map_err(|e| HandshakeError::Transport(e.to_string()))?;
@@ -35,9 +37,9 @@ impl JsonUdpTransport {
 }
 
 #[async_trait]
-impl HandshakeTransport for JsonUdpTransport {
+impl HandshakeTransport for CborUdpTransport {
     async fn send(&mut self, msg: HandshakeMessage) -> Result<(), HandshakeError> {
-        let bytes = serde_json::to_vec(&msg)
+        let bytes = serde_cbor::to_vec(&msg)
             .map_err(|e| HandshakeError::Transport(format!("encode: {}", e)))?;
         self.socket
             .send_to(&bytes, self.peer)
@@ -53,7 +55,7 @@ impl HandshakeTransport for JsonUdpTransport {
             .recv_from(&mut buf)
             .await
             .map_err(|e| HandshakeError::Transport(e.to_string()))?;
-        serde_json::from_slice(&buf[..len])
+        serde_cbor::from_slice(&buf[..len])
             .map_err(|e| HandshakeError::Transport(format!("decode: {}", e)))
     }
 }
@@ -91,7 +93,6 @@ where
 pub struct ReliableControlChannel<T> {
     transport: T,
     seq: u64,
-    seen_nonces: HashSet<Vec<u8>>,
     max_attempts: u8,
     base_timeout: Duration,
     drop_threshold: u8,
@@ -102,17 +103,10 @@ impl<T> ReliableControlChannel<T> {
         Self {
             transport,
             seq: 0,
-            seen_nonces: HashSet::new(),
             max_attempts: 5,
             base_timeout: Duration::from_millis(200),
             drop_threshold: 5,
         }
-    }
-
-    fn next_nonce(&mut self) -> Vec<u8> {
-        let mut nonce = vec![0u8; 16];
-        OsRng.fill_bytes(&mut nonce);
-        nonce
     }
 }
 
@@ -125,12 +119,7 @@ where
         mut envelope: ControlEnvelope,
     ) -> Result<Acknowledge, HandshakeError> {
         self.seq = self.seq.wrapping_add(1);
-        envelope.header.seq = self.seq;
-        envelope.header.nonce = self.next_nonce();
-        envelope.header.timestamp_ms = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap_or_default()
-            .as_millis() as u64;
+        envelope.seq = self.seq;
 
         let mut attempt: u8 = 0;
         loop {
@@ -146,11 +135,8 @@ where
 
             match time::timeout(timeout, self.transport.recv()).await {
                 Ok(Ok(HandshakeMessage::Ack(ack))) => {
-                    if ack.header.seq == envelope.header.seq && ack.ok {
-                        self.seen_nonces.insert(ack.header.nonce.clone());
+                    if ack.seq == envelope.seq && ack.ok {
                         return Ok(ack);
-                    } else if self.seen_nonces.contains(&ack.header.nonce) {
-                        return Err(HandshakeError::Protocol("replay detected".into()));
                     }
                 }
                 Ok(Ok(HandshakeMessage::Keepalive(_))) => {
@@ -171,12 +157,5 @@ where
     pub fn next_seq(&mut self) -> u64 {
         self.seq = self.seq.wrapping_add(1);
         self.seq
-    }
-
-    pub async fn send_signed(
-        &mut self,
-        envelope: ControlEnvelope,
-    ) -> Result<Acknowledge, HandshakeError> {
-        self.send_reliable(envelope).await
     }
 }

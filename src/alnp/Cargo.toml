@@ -1,8 +1,8 @@
 [package]
-name = "alnp"
+name = "alpine"
 version = "1.0.0"
 edition = "2021"
-description = "Authenticated Lighting Network Protocol: secure control-plane + streaming guard for lighting data."
+description = "Authenticated Lighting Protocol (alpine): secure control-plane + streaming guard for lighting data."
 license = "Apache-2.0"
 
 [lib]
@@ -12,6 +12,7 @@ crate-type = ["rlib", "staticlib"]
 async-trait = "0.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+serde_cbor = "0.11"
 thiserror = "1.0"
 rand = "0.8"
 uuid = { version = "1.6", features = ["serde", "v4"] }
@@ -22,3 +23,7 @@ rustls-pemfile = "2.1"
 tokio = { version = "1.37", features = ["net", "rt", "rt-multi-thread", "time", "macros"] }
 tokio-util = { version = "0.7", features = ["codec"] }
 parking_lot = "0.12"
+chacha20poly1305 = { version = "0.10", features = ["alloc"] }
+hkdf = "0.12"
+sha2 = "0.10"
+tracing = "0.1"

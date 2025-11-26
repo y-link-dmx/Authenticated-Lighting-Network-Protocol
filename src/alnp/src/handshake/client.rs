@@ -2,15 +2,16 @@ use async_trait::async_trait;
 use uuid::Uuid;
 
 use super::{
-    HandshakeContext, HandshakeError, HandshakeMessage, HandshakeParticipant, HandshakeTransport,
+    HandshakeContext, HandshakeError, HandshakeMessage, HandshakeOutcome, HandshakeParticipant,
+    HandshakeTransport,
 };
-use crate::crypto::KeyExchange;
+use crate::crypto::{compute_mac, KeyExchange};
 use crate::messages::{
-    CapabilitySet, ChallengeRequest, ChallengeResponse, ControllerHello, DeviceIdentity,
-    ProtocolVersion, SessionEstablished,
+    CapabilitySet, DeviceIdentity, MessageType, SessionAck, SessionEstablished, SessionInit,
+    SessionReady,
 };
 
-/// Controller-side handshake driver.
+/// Controller-side handshake driver implementing the ALPINE 1.0 flow.
 pub struct ClientHandshake<A, K>
 where
     A: super::ChallengeAuthenticator + Send + Sync,
@@ -18,7 +19,6 @@ where
 {
     pub identity: DeviceIdentity,
     pub capabilities: CapabilitySet,
-    pub protocol_version: ProtocolVersion,
     pub authenticator: A,
     pub key_exchange: K,
     pub context: HandshakeContext,
@@ -33,102 +33,112 @@ where
     async fn run<T: HandshakeTransport + Send>(
         &self,
         transport: &mut T,
-    ) -> Result<SessionEstablished, HandshakeError> {
-        let controller_hello = ControllerHello {
-            controller: self.identity.clone(),
-            requested_version: self.protocol_version.clone(),
-            capabilities: self.capabilities.clone(),
-            key_exchange: crate::messages::KeyExchangeProposal {
-                algorithm: format!("{:?}", self.context.key_algorithm),
-                public_key: self.key_exchange.public_key(),
-            },
-        };
+    ) -> Result<HandshakeOutcome, HandshakeError> {
+        let controller_nonce = super::new_nonce().to_vec();
+        let session_id = Uuid::new_v4();
 
+        // 1) Controller -> device: session_init
+        let init = SessionInit {
+            message_type: MessageType::SessionInit,
+            controller_nonce: controller_nonce.clone(),
+            controller_pubkey: self.key_exchange.public_key(),
+            requested: self.capabilities.clone(),
+            session_id,
+        };
         transport
-            .send(HandshakeMessage::ControllerHello(controller_hello))
+            .send(HandshakeMessage::SessionInit(init))
             .await?;
 
-        let node_hello = match transport.recv().await? {
-            HandshakeMessage::NodeHello(hello) => hello,
+        // 2) Device -> controller: session_ack
+        let ack = match transport.recv().await? {
+            HandshakeMessage::SessionAck(ack) => ack,
             other => {
                 return Err(HandshakeError::Protocol(format!(
-                    "expected NodeHello, got {:?}",
+                    "expected SessionAck, got {:?}",
                     other
                 )))
             }
         };
+        validate_ack(&ack, session_id, &controller_nonce, &self.context)?;
 
-        let expected_algorithm = format!("{:?}", self.context.key_algorithm);
-        if node_hello.key_exchange.algorithm != expected_algorithm {
-            return Err(HandshakeError::Capability(format!(
-                "node key algorithm {} not supported",
-                node_hello.key_exchange.algorithm
-            )));
+        // 3) Verify device signature over the controller nonce.
+        let sig_valid = self
+            .authenticator
+            .verify_challenge(&controller_nonce, &ack.signature);
+        if !sig_valid {
+            return Err(HandshakeError::Authentication(
+                "device signature validation failed".into(),
+            ));
         }
 
-        if node_hello.supported_version.major != self.protocol_version.major {
-            return Err(HandshakeError::Protocol(format!(
-                "version mismatch: node supports {}.{}.{}",
-                node_hello.supported_version.major,
-                node_hello.supported_version.minor,
-                node_hello.supported_version.patch
-            )));
-        }
-
-        let challenge = match transport.recv().await? {
-            HandshakeMessage::ChallengeRequest(ch) => ch,
-            other => {
-                return Err(HandshakeError::Protocol(format!(
-                    "expected ChallengeRequest, got {:?}",
-                    other
-                )))
-            }
-        };
-
-        validate_challenge(&challenge, &self.identity.cid, &self.context)?;
-
-        let signature = self.authenticator.sign_challenge(&challenge.nonce);
-        let shared = self
+        // 4) Derive shared keys (HKDF over concatenated nonces).
+        let mut salt = controller_nonce.clone();
+        salt.extend_from_slice(&ack.device_nonce);
+        let keys = self
             .key_exchange
-            .derive_shared(&node_hello.key_exchange.public_key);
+            .derive_keys(&ack.device_pubkey, &salt)
+            .map_err(|e| HandshakeError::Authentication(format!("{}", e)))?;
 
-        let response = ChallengeResponse {
-            nonce: challenge.nonce.clone(),
-            signature,
-            key_confirmation: Some(shared.shared_secret.clone()),
+        // 5) Controller -> device: session_ready (MAC proves key possession).
+        let mac = compute_mac(&keys, 0, session_id.as_bytes(), ack.device_nonce.as_slice())
+            .map_err(|e| HandshakeError::Authentication(e.to_string()))?;
+        let ready = SessionReady {
+            message_type: MessageType::SessionReady,
+            session_id,
+            mac,
         };
-
         transport
-            .send(HandshakeMessage::ChallengeResponse(response))
+            .send(HandshakeMessage::SessionReady(ready))
             .await?;
 
-        let established = match transport.recv().await? {
-            HandshakeMessage::SessionEstablished(session) => session,
+        // 6) Device -> controller: session_complete
+        let complete = match transport.recv().await? {
+            HandshakeMessage::SessionComplete(c) => c,
             other => {
                 return Err(HandshakeError::Protocol(format!(
-                    "expected SessionEstablished, got {:?}",
+                    "expected SessionComplete, got {:?}",
                     other
                 )))
             }
         };
+        if !complete.ok {
+            return Err(HandshakeError::Authentication(
+                "device rejected session_ready".into(),
+            ));
+        }
 
-        Ok(established)
+        let established = SessionEstablished {
+            session_id,
+            controller_nonce,
+            device_nonce: ack.device_nonce,
+            capabilities: ack.capabilities,
+            device_identity: ack.device_identity,
+        };
+
+        Ok(HandshakeOutcome { established, keys })
     }
 }
 
-fn validate_challenge(
-    challenge: &ChallengeRequest,
-    controller_cid: &Uuid,
+fn validate_ack(
+    ack: &SessionAck,
+    session_id: Uuid,
+    controller_nonce: &[u8],
     context: &HandshakeContext,
 ) -> Result<(), HandshakeError> {
-    if challenge.controller_expected != *controller_cid {
-        return Err(HandshakeError::Authentication(
-            "challenge addressed to different controller".into(),
+    if ack.session_id != session_id {
+        return Err(HandshakeError::Protocol(
+            "session_id mismatch between init and ack".into(),
+        ));
+    }
+
+    if ack.device_nonce.len() != controller_nonce.len() {
+        return Err(HandshakeError::Protocol(
+            "device nonce length mismatch".into(),
         ));
     }
 
     if let Some(expected) = &context.expected_controller {
-        if &challenge.controller_expected.to_string() != expected {
+        if expected != &session_id.to_string() {
             return Err(HandshakeError::Authentication(
                 "controller identity rejected".into(),
             ));

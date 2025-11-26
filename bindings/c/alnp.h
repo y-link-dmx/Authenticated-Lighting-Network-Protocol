@@ -4,32 +4,54 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// ALPINE 1.0 CBOR envelope helpers for C consumers.
+
+typedef struct {
+  const uint8_t* data;
+  uint32_t len;
+} alnp_bytes_t;
+
+typedef struct {
+  alnp_bytes_t client_nonce; // 32 bytes
+  const char** requested;    // array of strings
+  uint32_t requested_len;
+} alnp_discovery_request_t;
+
+typedef struct {
+  alnp_bytes_t payload;
+  alnp_bytes_t signature;
+} alnp_signed_reply_t;
+
 typedef enum {
-  ALNP_STATE_INIT = 0,
-  ALNP_STATE_HANDSHAKE,
-  ALNP_STATE_AUTHENTICATED,
-  ALNP_STATE_READY,
-  ALNP_STATE_STREAMING,
-  ALNP_STATE_FAILED,
-  ALNP_STATE_CLOSED
-} alnp_state_t;
+  ALNP_CHANNEL_U8 = 0,
+  ALNP_CHANNEL_U16 = 1
+} alnp_channel_format_t;
 
-typedef void (*alnp_control_callback)(const uint8_t* data, uint32_t len, void* ctx);
+typedef struct {
+  const uint16_t* channels;
+  uint32_t channels_len;
+  alnp_channel_format_t format;
+  uint8_t priority;
+} alnp_frame_t;
 
-// Initialize ALNP and prepare control-plane sockets.
-int alnp_init(void);
+// Build a CBOR-encoded discovery request buffer into the provided output.
+int alnp_build_discovery_request(const alnp_discovery_request_t* req, alnp_bytes_t* out_buf);
 
-// Send a control-plane message (JSON/UDP encoded envelope).
-int alnp_send_control(const uint8_t* data, uint32_t len);
+// Verify a signed discovery reply; returns 0 on success.
+int alnp_verify_discovery_reply(const alnp_signed_reply_t* reply, const uint8_t* expected_nonce, uint32_t nonce_len, const uint8_t* verifying_key, uint32_t key_len);
 
-// Register callback for inbound control messages.
-void alnp_set_control_callback(alnp_control_callback cb, void* ctx);
+// Encode and send a control envelope (caller provides transport).
+int alnp_encode_control(const uint8_t* session_id, const uint8_t* payload, uint32_t payload_len, uint64_t seq, alnp_bytes_t* out_buf);
 
-// Start/stop streaming after authentication.
-int alnp_start_streaming(void);
-int alnp_stop_streaming(void);
+// Encode a streaming frame for transmission.
+int alnp_encode_stream_frame(const uint8_t* session_id, const alnp_frame_t* frame, alnp_bytes_t* out_buf);
 
-// Current session state.
-alnp_state_t alnp_get_state(void);
+#ifdef __cplusplus
+}
+#endif
 
 #endif // ALNP_H

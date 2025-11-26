@@ -38,7 +38,7 @@ For more details, see the protocol documents:
 The reference implementation ships with:
 
 - Rust crate (`alpine-core`)
-- TypeScript client (`@alpine/protocol`)
+- TypeScript client (`@alpine-protocol/protocol`)
 - C static library + headers
 - Python package (`alpine-protocol`)
 

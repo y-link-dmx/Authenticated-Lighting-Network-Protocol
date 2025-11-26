@@ -122,14 +122,60 @@ def encode_frame(frame: FrameEnvelope) -> bytes:
     return _to_cbor(frame.to_map())
 
 
+def build_discovery_request(requested: List[str], client_nonce: bytes) -> DiscoveryRequest:
+    return DiscoveryRequest(
+        type="alpine_discover",
+        version=ALPINE_VERSION,
+        client_nonce=client_nonce,
+        requested=requested,
+    )
+
+
+def build_control_envelope(
+    session_id: str, seq: int, op: str, payload: Dict[str, Any], mac: bytes
+) -> ControlEnvelope:
+    return ControlEnvelope(
+        type="alpine_control",
+        session_id=session_id,
+        seq=seq,
+        op=op,
+        payload=payload,
+        mac=mac,
+    )
+
+
+def build_frame_envelope(
+    session_id: str,
+    timestamp_us: int,
+    priority: int,
+    channel_format: str,
+    channels: List[int],
+    groups: Optional[Dict[str, List[int]]] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> FrameEnvelope:
+    return FrameEnvelope(
+        type="alpine_frame",
+        session_id=session_id,
+        timestamp_us=timestamp_us,
+        priority=priority,
+        channel_format=channel_format,
+        channels=channels,
+        groups=groups,
+        metadata=metadata,
+    )
+
+
 __all__ = [
     "ALPINE_VERSION",
     "CapabilitySet",
     "DeviceIdentity",
     "DiscoveryRequest",
     "DiscoveryReply",
+    "build_discovery_request",
     "ControlEnvelope",
     "FrameEnvelope",
+    "build_control_envelope",
+    "build_frame_envelope",
     "encode_control",
     "encode_frame",
 ]

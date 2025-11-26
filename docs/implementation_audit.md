@@ -46,10 +46,27 @@ This report compares the promises written in the documentation (`README.md`, `SP
   * **sACN** - 128 channels: ~7.6-8.3 us, 512 channels: ~6.5-6.7 us.
 - These numbers follow the encode -> send -> receive -> decode loop described in `src/alnp/docs/benchmarks.md`, and the CSV/histograms in each `report/index.html` document the same medians, p95, and outlier counts.
 
+## CI integration
+
+- `.github/workflows/e2e-tests.yml` runs the UDP E2E suite on `ubuntu-latest`. It checks out the repo, installs the stable toolchain, and invokes `cargo test --tests -- --ignored` inside `src/alnp`, ensuring the real-socket handshake/control/streaming state-machines stay exercised on every pull request and push to `main`.
+
+## Publishing infrastructure
+
+- Rust publishing targets GitHub Packages via `cargo publish --registry github`; `CARGO_REGISTRIES_GITHUB_TOKEN` should be set and the registry index is declared within `src/alnp/Cargo.toml` to point at `https://github.com/y-link-dmx/Authenticated-Lighting-Protocol.git`.
+- TypeScript, Python, and C release scripts already run the UDP E2E suite and stage artifacts into `dist/{ts,python,rust,c}`; their respective token requirements are documented in the root README so maintainers know which secrets to provide for GitHub (or PyPI/npm) publishing.
 ## Outstanding observations
 
 - `docs/reference_impl.md` promises working bindings for TS, Python, and C. Those directories exist, but their package managers were not invoked in this audit, so their pipelines should be verified before claiming parity.
 - `docs/security.md` mentions optional vendor certificates and local pairing modes. Those features are not currently exercised in `src/alnp`, so they are still candidates for follow-up work if they must be part of the security story.
 - `docs/errors.md` defines streaming errors like `STREAM_TOO_LARGE` and `STREAM_UNSUPPORTED_CHANNEL_MODE`. Although the variants exist in `ErrorCode`, the current runtime does not emit every error path, so targeted tests would be needed to prove those branches.
+
+## Bindings status
+
+- **TypeScript (`bindings/ts`)** now exports helpers such as `buildDiscoveryRequest`, `buildControlEnvelope`, and `buildFrameEnvelope`, mirroring the objects described under `docs/handshake.md` / `docs/streaming.md`, so frontend code can assemble CBOR payloads without repeating the field names.
+- **Python (`bindings/python`)** adds equivalent helpers (`build_discovery_request`, `build_control_envelope`, `build_frame_envelope`) plus the existing dataclasses, keeping that binding in sync with the Rust datatypes and the UDP handshake/control/streaming docs.
+- **C (`bindings/c/alnp.h`)** continues to expose `alnp_build_discovery_request`, `alnp_verify_discovery_reply`, `alnp_encode_control`, and `alnp_encode_stream_frame`; these functions remain the C entry points for the protocol helper library described in `docs/reference_impl.md`.
+- **Rust example (`examples/rust/basic.rs`)** and packaging scripts now mention the UDP E2E architecture (`docs/implementation_audit.md`) and run the real handshake tests (`scripts/build_rust.sh`, `scripts/build_c.sh`).
+
+With these updates, each binding layer has minimal helper functions that reflect the documented ALPINE architecture, even if their package managers still need to be run separately for release.
 
 Aside from the bindings and optional security/error paths listed above, the core ALPINE 1.0 promises in the docs are implemented: each layer is wired end-to-end over real UDP, capability and security data flow through the stack, and the benchmark results now back the documented performance claims.

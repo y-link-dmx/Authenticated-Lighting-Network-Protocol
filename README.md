@@ -33,6 +33,21 @@ For more details, see the protocol documents:
 - [`docs/security.md`](docs/security.md)
 - [`docs/reference_impl.md`](docs/reference_impl.md)
 
+## Continuous Integration
+
+- `UDP E2E Tests` workflow (`.github/workflows/e2e-tests.yml`) runs `cargo test --tests -- --ignored` from `src/alnp`, exercising the real UDP handshake/control/streaming paths on Linux.
+
+## Publishing & package registries
+
+This project publishes artifacts for Rust, C, TypeScript, and Python. Before running the release scripts or invoking `cargo publish`, set the following credentials in your environment or GitHub secrets:
+
+| Registry | Environment variable | Notes |
+| --- | --- | --- |
+| GitHub Packages (Rust) | `CARGO_REGISTRIES_GITHUB_TOKEN` | Used by `cargo publish --registry github`. The GitHub registry index is configured in `src/alnp/Cargo.toml`; also point `CARGO_HOME` at `<repo>/.cargo` (or add the same `[registries.github]` entry inside your global Cargo config) so that the registry is loaded before publishing—otherwise `cargo publish --registry github` will panic with “remote registries must have config”. |
+| TypeScript (npm/PNPM) | `NPM_TOKEN` or `PNPM_TOKEN` | Required for publishing `dist/ts` via `npm publish` / `pnpm publish`. |
+| Python (PyPI or GitHub) | `PYPI_API_TOKEN` (or `TWINE_USERNAME`/`TWINE_PASSWORD`) | `scripts/build_python.sh` generates wheel/sdist artifcats; upload them with `twine upload`. |
+| C artifacts | `GITHUB_TOKEN` | Use this token to push `dist/c` (static library + header) to GitHub Packages or release assets. |
+
 ## Language Bindings
 
 The reference implementation ships with:
@@ -53,4 +68,3 @@ Each binding provides:
 ## License
 
 Apache-2.0
-

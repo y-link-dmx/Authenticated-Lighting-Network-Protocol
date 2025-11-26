@@ -4,11 +4,30 @@ Lightweight Python helpers for ALNP control envelopes and headers. This package 
 
 ## Usage
 ```python
-from alnp import ControlHeader, ControlEnvelope, SetMode
+from alnp import (
+    build_discovery_request,
+    build_control_envelope,
+    build_frame_envelope,
+    CapabilitySet,
+    DeviceIdentity,
+)
 
-hdr = ControlHeader(seq=1, nonce=b"\x01\x02\x03", timestamp_ms=1700000000000)
-env = ControlEnvelope(header=hdr, payload=SetMode(mode="Normal"), signature=b"")
-print(env.to_json())
+discovery = build_discovery_request(["identity", "capabilities"], b"\x00" * 32)
+control = build_control_envelope(
+    session_id="00000000-0000-0000-0000-000000000000",
+    seq=1,
+    op="set_mode",
+    payload={"mode": "Normal"},
+    mac=b"\x00" * 16,
+)
+frame = build_frame_envelope(
+    session_id="00000000-0000-0000-0000-000000000000",
+    timestamp_us=0,
+    priority=5,
+    channel_format="u8",
+    channels=[0, 1, 2, 3],
+)
+print(discovery, control, frame)
 ```
 
 ## Build

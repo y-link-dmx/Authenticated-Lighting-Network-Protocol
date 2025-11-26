@@ -75,6 +75,15 @@ export interface DiscoveryRequest {
   requested: string[];
 }
 
+export function buildDiscoveryRequest(requested: string[], clientNonce: Uint8Array): DiscoveryRequest {
+  return {
+    type: MessageType.AlpineDiscover,
+    version: ALPINE_VERSION,
+    client_nonce: clientNonce,
+    requested,
+  };
+}
+
 export interface DiscoveryReply {
   type: MessageType.AlpineDiscoverReply;
   alpine_version: string;
@@ -129,6 +138,23 @@ export interface ControlEnvelope {
   mac: Uint8Array;
 }
 
+export function buildControlEnvelope(
+  sessionId: Uuid,
+  seq: number,
+  op: ControlOp,
+  payload: unknown,
+  mac: Uint8Array,
+): ControlEnvelope {
+  return {
+    type: MessageType.AlpineControl,
+    session_id: sessionId,
+    seq,
+    op,
+    payload,
+    mac,
+  };
+}
+
 export interface Acknowledge {
   type: MessageType.AlpineControlAck;
   session_id: Uuid;
@@ -147,6 +173,27 @@ export interface FrameEnvelope {
   channels: number[];
   groups?: Record<string, number[]>;
   metadata?: Record<string, unknown>;
+}
+
+export function buildFrameEnvelope(
+  sessionId: Uuid,
+  timestampUs: number,
+  priority: number,
+  channelFormat: ChannelFormat,
+  channels: number[],
+  groups?: Record<string, number[]>,
+  metadata?: Record<string, unknown>,
+): FrameEnvelope {
+  return {
+    type: MessageType.AlpineFrame,
+    session_id: sessionId,
+    timestamp_us: timestampUs,
+    priority,
+    channel_format: channelFormat,
+    channels,
+    groups,
+    metadata,
+  };
 }
 
 export interface Keepalive {

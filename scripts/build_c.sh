@@ -9,6 +9,8 @@ mkdir -p "$DIST"
 cd "$ROOT_DIR/src/alnp"
 
 echo "==> Building static library for C consumers (version $VERSION)"
+echo "==> Validating UDP E2E tests (cargo test --tests -- --ignored)"
+cargo test --tests -- --ignored
 cargo build --release
 
 cp -f target/release/libalnp.a "$DIST/libalnp-$VERSION.a"

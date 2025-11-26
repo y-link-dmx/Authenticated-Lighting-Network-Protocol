@@ -74,3 +74,4 @@ target/
 node_modules/
 bindings/ts/dist/
 bindings/python/dist/
+.cargo/.package-cache/

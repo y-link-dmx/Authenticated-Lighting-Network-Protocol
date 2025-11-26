@@ -10,6 +10,8 @@ cd "$ROOT_DIR/src/alnp"
 
 echo "==> Building Rust crate (version $VERSION)"
 cargo test
+echo "==> Running UDP E2E tests (cargo test --tests -- --ignored)"
+cargo test --tests -- --ignored
 cargo build --release
 
 echo "==> Packaging artifacts"

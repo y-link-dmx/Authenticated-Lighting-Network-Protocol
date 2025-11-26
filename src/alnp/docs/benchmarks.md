@@ -48,14 +48,14 @@ Criterion uses statistical sampling (confidence intervals, histograms, medians/p
 
 Each Criterion benchmark reports median latency plus p95. Example outputs (running on build machine) look like:
 
-| Target | Channels | Median (µs) | p95 (µs) |
-|--------|----------|-------------|----------|
-| ALPINE Streaming | 128 | ~9.5 | ~12 |
-| ALPINE Streaming | 512 | ~22 | ~27 |
-| sACN Streaming | 128 | ~7.8 | ~10 |
-| sACN Streaming | 512 | ~17 | ~21 |
-| Art-Net Streaming | 128 | ~6.3 | ~9 |
-| Art-Net Streaming | 512 | ~14.5 | ~18 |
+| Target            | Channels| Median (µs)| p95 (µs)|
+|:------------------|---------|------------|---------|
+| ALPINE Streaming  | 128     | ~9.5       | ~12     |
+| ALPINE Streaming  | 512     | ~22        | ~27     |
+| sACN Streaming    | 128     | ~7.8       | ~10     |
+| sACN Streaming    | 512     | ~17        | ~21     |
+| Art-Net Streaming | 128     | ~6.3       | ~9      |
+| Art-Net Streaming | 512     | ~14.5      | ~18     |
 
 The above numbers are illustrative; refer to your local `target/criterion/` outputs for precise data and confidence intervals.
 

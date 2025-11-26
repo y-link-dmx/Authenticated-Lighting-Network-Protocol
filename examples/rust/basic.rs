@@ -15,6 +15,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     // Replace LoopbackTransport with JsonUdpTransport::bind for real network.
+    // Refer to docs/implementation_audit.md for the UDP handshake/control/streaming architecture when wiring this example into production.
     let mut transport = LoopbackTransport::new();
     let session = example_controller_session(identity.clone(), &mut transport).await?;
 

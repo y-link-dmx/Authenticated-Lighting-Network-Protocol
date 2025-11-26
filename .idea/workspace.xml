@@ -28,26 +28,19 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="Removed all test code, utilities, and performance benchmarks related to ALNP.">
-      <change beforePath="$PROJECT_DIR$/src/alnp/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/Cargo.lock" afterDir="false" />
+    <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="Added ALPINE benchmarks and E2E tests.&#10;&#10;- Introduced `benchmarks.md` outlining methodology and metrics for streaming latency and protocol evaluations.&#10;- Added Criterion-based performance benchmarks for ALPINE, Art-Net, and sACN under `benches/`.&#10;- Implemented E2E UDP tests for streaming layer with `streaming_udp_e2e.rs`.&#10;- Modularized test utilities and shared config under `benches/common/`.&#10;- Updated ALPINE documentation to reflect benchmark results and methodology.">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/python/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/python/src/alnp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/src/alnp/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/ts/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/implementation_audit.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/implementation_audit.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/rust/basic.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/rust/basic.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/build_c.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build_c.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/build_rust.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build_rust.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/alnp/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/control.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/control.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/crypto/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/crypto/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/discovery.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/discovery.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/handshake/client.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/handshake/client.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/handshake/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/handshake/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/handshake/server.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/handshake/server.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/handshake/transport.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/handshake/transport.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/messages/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/messages/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/session/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/session/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/stream.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/stream.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/target/.rustc_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/tests/e2e.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/e2e.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/tests/e2e/common.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/tests/e2e/control_udp_e2e.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/e2e/control_udp_e2e.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/tests/e2e/handshake_udp_e2e.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/e2e/handshake_udp_e2e.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/tests/feature_suite.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/feature_suite.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/docs/benchmarks.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/docs/benchmarks.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +49,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:bench" />
   <component name="Git.Settings">
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="rebrand-ALPINE" />
@@ -101,11 +95,15 @@
     "accountId": "37f597b7-0b3a-468c-9456-8175f1be8b0d"
   }
 }]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/alnp/Cargo.toml" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/alnp/docs/benchmarks.md" root0="FORCE_HIGHLIGHTING" root1="SKIP_INSPECTION" />
+  </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="ZrWc6rVe" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="AISelfReview" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
@@ -333,7 +331,7 @@
       <option name="presentableId" value="Default" />
       <updated>1763902276726</updated>
       <workItem from="1763902278166" duration="6168000" />
-      <workItem from="1763911071569" duration="15341000" />
+      <workItem from="1763911071569" duration="19211000" />
     </task>
     <task id="LOCAL-00001" summary="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (src/alnp/Cargo.toml, src/alnp/src/lib.rs, src/alnp/src/handshake/{mod.rs,client.rs,server.rs}, src/alnp/src/    &#10;    session/mod.rs, src/alnp/src/crypto/mod.rs, src/alnp/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (src/alnp/src/messages/mod.rs, src/alnp/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, src/alnp/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (src/alnp/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS.">
       <option name="closed" value="true" />
@@ -388,7 +386,14 @@
       <option name="presentableId" value="LOCAL−00007" />
       <updated>1764143711093</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL−00008" summary="Added ALPINE benchmarks and E2E tests.&#10;&#10;- Introduced `benchmarks.md` outlining methodology and metrics for streaming latency and protocol evaluations.&#10;- Added Criterion-based performance benchmarks for ALPINE, Art-Net, and sACN under `benches/`.&#10;- Implemented E2E UDP tests for streaming layer with `streaming_udp_e2e.rs`.&#10;- Modularized test utilities and shared config under `benches/common/`.&#10;- Updated ALPINE documentation to reflect benchmark results and methodology.">
+      <option name="closed" value="true" />
+      <created>1764149347873</created>
+      <option name="number" value="LOCAL−00008" />
+      <option name="presentableId" value="LOCAL−00008" />
+      <updated>1764149347873</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -417,6 +422,7 @@
     <MESSAGE value="Added extensive E2E and performance tests for ALNP handshake, control, and streaming.&#10;&#10;- Introduced a comprehensive suite of E2E tests covering control-plane reliability, reordering, retransmission, handshake scenarios (success/replay/signature validation/failures), and streaming.&#10;- Added performance tests for latency, keepalive stability, mixed conditions, streaming load, and universe capacity.&#10;- Enhanced test infrastructure with mock UDP, stream, and custom assertion utilities.&#10;- Updated `.gitignore` and `.idea` for development artifacts." />
     <MESSAGE value="Refactored and expanded documentation, renamed protocol to ALPINE, and finalized v1.0 spec.&#10;&#10;- Rebranded protocol and documentation from ALNP to ALPINE, aligning terminology across all files.&#10;- Removed legacy content (`bindings.md, overview.md, src/alnp/README.md`) and introduced new protocol documents (`discovery.md, handshake.md, architecture.md, streaming.md, control_plane.md, capabilities.md, security.md, errors.md`).&#10;- Updated `README.md` with ALPINE overview and language binding highlights.&#10;- Consolidated ALPINE 1.0 wire protocol details into a rewritten `SPEC.md`.&#10;- Added IntelliJ project settings and quality-of-life updates for `.idea/`.&#10;- Enhanced modularity and clarity across subsystem-focused docs (discovery, handshake, streaming, and control plane)." />
     <MESSAGE value="Removed all test code, utilities, and performance benchmarks related to ALNP." />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed all test code, utilities, and performance benchmarks related to ALNP." />
+    <MESSAGE value="Added ALPINE benchmarks and E2E tests.&#10;&#10;- Introduced `benchmarks.md` outlining methodology and metrics for streaming latency and protocol evaluations.&#10;- Added Criterion-based performance benchmarks for ALPINE, Art-Net, and sACN under `benches/`.&#10;- Implemented E2E UDP tests for streaming layer with `streaming_udp_e2e.rs`.&#10;- Modularized test utilities and shared config under `benches/common/`.&#10;- Updated ALPINE documentation to reflect benchmark results and methodology." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added ALPINE benchmarks and E2E tests.&#10;&#10;- Introduced `benchmarks.md` outlining methodology and metrics for streaming latency and protocol evaluations.&#10;- Added Criterion-based performance benchmarks for ALPINE, Art-Net, and sACN under `benches/`.&#10;- Implemented E2E UDP tests for streaming layer with `streaming_udp_e2e.rs`.&#10;- Modularized test utilities and shared config under `benches/common/`.&#10;- Updated ALPINE documentation to reflect benchmark results and methodology." />
   </component>
 </project>

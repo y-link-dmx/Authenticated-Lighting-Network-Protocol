@@ -2,6 +2,11 @@
 
 All notable changes to ALPINE will be documented in this file.
 
+## [1.0.10] - 2025-12-03
+- Publish the Rust crate as `alpine-protocol-rs` so we can continue releasing from the `alpine-core` repo even though the old crate name was owned elsewhere.
+- Update release scripts to copy the new `alpine-protocol-rs-*.crate` so the artifact matches the crates.io name while clients still include `alpine` in their namespaces.
+- Keep shipping docs, the GHCR C package, and the embedded-friendly CI job so every release bundles docs + binaries with the constrained build checks.
+
 ## [1.0.9] - 2025-12-02
 - Add the `embedded` build profile (`#define ALPINE_EMBEDDED`) so the C++ helper compiles with no exceptions, RTTI, or heap allocations.
 - Validate that mode via `.github/workflows/embedded.yml` and `scripts/build_embedded_cpp.sh`, which runs with the ESP32-safe flag set for every push/PR.
@@ -13,7 +18,7 @@ All notable changes to ALPINE will be documented in this file.
 - Keep the GHCR C package, TypeScript, Python, and Rust releases aligned under the `v1.0.8` tag.
 
 ## [1.0.7] - 2025-12-01
-- Keep the crate name `alpine-core` for crates.io while exposing the library as `alpine` so existing tests and consumers can still import `alpine::…`.
+- Keep the crate name `alpine-core` for crates.io while exposing the library as `alpine` so existing tests and consumers can still import `alpine::...`.
 - Restore `libalpine.a` as the C artifact while keeping the GHCR image packaging and docs bundle unchanged.
 - Continue shipping docs + artifacts together so release pages always include README/SPEC/docs and the tarball on GHCR.
 
@@ -45,6 +50,7 @@ All notable changes to ALPINE will be documented in this file.
 - ALNP-Stream gating with jitter handling (hold-last, drop, lerp).
 - TypeScript and C bindings scaffolds; Python package stub for clients.
 
+[1.0.10]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.10
 [1.0.9]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.9
 [1.0.8]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.8
 [1.0.7]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.7

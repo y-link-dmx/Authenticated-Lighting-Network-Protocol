@@ -52,7 +52,7 @@ This project publishes artifacts for Rust, C, TypeScript, and Python. Before run
 
 The reference implementation ships with:
 
-- Rust crate (`alpine-core`)
+- Rust crate (`alpine-protocol-rs`)
 - TypeScript client (`@alpine-core/protocol`)
 - C static library + headers
 - C++ helper header (`bindings/cpp/alnp.hpp`)

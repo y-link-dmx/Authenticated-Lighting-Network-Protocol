@@ -1,0 +1,16 @@
+name: Embedded Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  embedded-build:
+    name: Build embedded C++ binding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build embedded mode
+        run: |
+          ./scripts/build_embedded_cpp.sh

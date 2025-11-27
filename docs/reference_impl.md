@@ -6,6 +6,7 @@ This document describes how to implement ALPINE 1.0 in:
 - TypeScript
 - Python
 - C (static library)
+- C++ helper header + `ALPINE_EMBEDDED` profile
 - C++ (helper header wrapping the C helpers)
 
 A correct implementation MUST:
@@ -20,4 +21,5 @@ A correct implementation MUST:
 8. Handle capability negotiation
 9. Follow error semantics exactly
 
-Reference code structure is included for each language.
+Reference code structure is included for each language; C++ users can toggle
+`ALPINE_EMBEDDED` to compile the same header without heap allocations or RTTI.

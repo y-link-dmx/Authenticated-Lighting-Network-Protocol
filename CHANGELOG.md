@@ -2,6 +2,11 @@
 
 All notable changes to ALPINE will be documented in this file.
 
+## [1.0.9] - 2025-12-02
+- Add the `embedded` build profile (`#define ALPINE_EMBEDDED`) so the C++ helper compiles with no exceptions, RTTI, or heap allocations.
+- Validate that mode via `.github/workflows/embedded.yml` and `scripts/build_embedded_cpp.sh`, which runs with the ESP32-safe flag set for every push/PR.
+- Document the embedded path in the README/docs so constrained targets get the same great API as desktop builds.
+
 ## [1.0.8] - 2025-12-02
 - Provide the C++ helper header (`bindings/cpp/alnp.hpp`) so C++ projects can include ALPINE without touching the raw C structs.
 - Deliver the new header along with `README.md`, `SPEC.md`, and `docs/` in each release asset so documentation and libs travel together.
@@ -40,6 +45,7 @@ All notable changes to ALPINE will be documented in this file.
 - ALNP-Stream gating with jitter handling (hold-last, drop, lerp).
 - TypeScript and C bindings scaffolds; Python package stub for clients.
 
+[1.0.9]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.9
 [1.0.8]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.8
 [1.0.7]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.7
 [1.0.6]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.6

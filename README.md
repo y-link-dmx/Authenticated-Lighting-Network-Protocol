@@ -66,6 +66,16 @@ Each binding provides:
 - Control envelope API
 - Streaming client/server
 
+## Embedded mode
+
+The C++ helper exposes an `ALPINE_EMBEDDED` configuration that keeps the API
+identical while disabling hidden heap allocations, RTTI, and exception support.
+Use `scripts/build_embedded_cpp.sh` or `bindings/cpp/embedded_test.cpp` to verify
+the restricted flags (`-fno-exceptions`, `-fno-rtti`, `-fno-threadsafe-statics`,
+`-fno-use-cxa-atexit`, `-Os`). The CI job `.github/workflows/embedded.yml` runs
+that script for every change to `main`, so ESP32-style builds are validated
+alongside the desktop releases.
+
 ## License
 
 Apache-2.0

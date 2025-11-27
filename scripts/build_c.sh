@@ -15,4 +15,5 @@ cargo build --release
 
 cp -f target/release/libalpine.a "$DIST/libalpine-$VERSION.a"
 cp -f "$ROOT_DIR/bindings/c/alnp.h" "$DIST/alnp.h"
+cp -f "$ROOT_DIR/bindings/cpp/alnp.hpp" "$DIST/alnp.hpp"
 echo "C artifacts written to $DIST"

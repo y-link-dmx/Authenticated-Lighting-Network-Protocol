@@ -6,6 +6,7 @@ This document describes how to implement ALPINE 1.0 in:
 - TypeScript
 - Python
 - C (static library)
+- C++ (helper header wrapping the C helpers)
 
 A correct implementation MUST:
 

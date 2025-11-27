@@ -1,24 +1,29 @@
 # Changelog
 
-- All notable changes to ALPINE will be documented in this file.
+All notable changes to ALPINE will be documented in this file.
+
+## [1.0.8] - 2025-12-02
+- Provide the C++ helper header (`bindings/cpp/alnp.hpp`) so C++ projects can include ALPINE without touching the raw C structs.
+- Deliver the new header along with `README.md`, `SPEC.md`, and `docs/` in each release asset so documentation and libs travel together.
+- Keep the GHCR C package, TypeScript, Python, and Rust releases aligned under the `v1.0.8` tag.
 
 ## [1.0.7] - 2025-12-01
-- Keep the crate name `alpine-core` for crates.io while exposing the library as `alpine` so existing tests and consumers continue to import `alpine::…`.
+- Keep the crate name `alpine-core` for crates.io while exposing the library as `alpine` so existing tests and consumers can still import `alpine::�`.
 - Restore `libalpine.a` as the C artifact while keeping the GHCR image packaging and docs bundle unchanged.
 - Continue shipping docs + artifacts together so release pages always include README/SPEC/docs and the tarball on GHCR.
 
 ## [1.0.6] - 2025-11-30
-- Rename the Rust crate to `alpine-core` and ship it as `alpine-core-1.0.6` so future updates can belong to your organization.
+- Rename the Rust crate to `alpine-core` and ship it as `alpine-core-1.0.6` so future updates belong to the alpine-core organization.
 - Update the static library export to `libalpine-core-*.a` so the C bindings still match the crate name.
 - Keep docs, GHCR C package, and release notes flowing with the new tag.
 
 ## [1.0.5] - 2025-11-29
-- Publish the C tarball as both a release asset and a GHCR package so it’s easy to download/play with.
-- Bundle README, SPEC, and `docs/` into each release asset so the documentation always travels with every package.
+- Publish the C tarball as both a release asset and a GHCR package so it is easy to download and use.
+- Bundle `README.md`, `SPEC.md`, and `docs/` into each release asset so the documentation always travels with every package.
 - Keep TS, Python, and Rust manifests in sync with the `v1.0.5` tag so CI redeploys everything cleanly.
 
 ## [1.0.4] - 2025-11-29
-- Target `crates-io` explicitly when publishing Rust so Cargo knows which registry to hit.
+- Target `crates-io` explicitly when publishing Rust so Cargo knows which registry to use.
 - Refresh every binding manifest/tag to `1.0.4` so the next release has new artifacts.
 - Confirm C/TS/Python jobs still upload via GitHub Packages with the new permissions.
 
@@ -35,6 +40,7 @@
 - ALNP-Stream gating with jitter handling (hold-last, drop, lerp).
 - TypeScript and C bindings scaffolds; Python package stub for clients.
 
+[1.0.8]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.8
 [1.0.7]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.7
 [1.0.6]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.6
 [1.0.5]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.5

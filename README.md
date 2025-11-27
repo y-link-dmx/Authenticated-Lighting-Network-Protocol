@@ -55,6 +55,7 @@ The reference implementation ships with:
 - Rust crate (`alpine-core`)
 - TypeScript client (`@alpine-core/protocol`)
 - C static library + headers
+- C++ helper header (`bindings/cpp/alnp.hpp`)
 - Python package (`alpine-protocol`)
 
 Each binding provides:

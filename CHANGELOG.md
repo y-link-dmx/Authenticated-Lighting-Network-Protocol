@@ -2,6 +2,11 @@
 
 All notable changes to ALPINE will be documented in this file.
 
+## [1.0.4] - 2025-11-29
+- Target `crates-io` explicitly when publishing Rust so Cargo knows which registry to hit.
+- Refresh every binding manifest/tag to `1.0.4` so the next release has new artifacts.
+- Confirm C/TS/Python jobs still upload via GitHub Packages with the new permissions.
+
 ## [1.0.3] - 2025-11-28
 - Align release workflows and GitHub Packages permissions with `alpine-core`.
 - Allow Twine to publish Python wheels by giving the workflow `packages: write`.
@@ -20,6 +25,7 @@ All notable changes to ALPINE will be documented in this file.
 - ALNP-Stream gating with jitter handling (hold-last, drop, lerp).
 - TypeScript and C bindings scaffolds; Python package stub for clients.
 
+[1.0.4]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.4
 [1.0.3]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.3
 [1.0.2]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.2
 [1.0.0]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.0

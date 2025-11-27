@@ -2,6 +2,11 @@
 
 All notable changes to ALPINE will be documented in this file.
 
+## [1.0.3] - 2025-11-28
+- Align release workflows and GitHub Packages permissions with `alpine-core`.
+- Allow Twine to publish Python wheels by giving the workflow `packages: write`.
+- Bump every manifest/tag so the release pipelines run with `v1.0.3`.
+
 ## [1.0.2] - 2025-11-27
 - Align TS/GitHub package workflows with the `@alpine-core` scope and add npmjs/public flags.
 - Fix release artifacts to copy the actual crate/static lib names and expose Python wheels.
@@ -15,5 +20,6 @@ All notable changes to ALPINE will be documented in this file.
 - ALNP-Stream gating with jitter handling (hold-last, drop, lerp).
 - TypeScript and C bindings scaffolds; Python package stub for clients.
 
+[1.0.3]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.3
 [1.0.2]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.2
 [1.0.0]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.0

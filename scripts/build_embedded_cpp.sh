@@ -15,7 +15,7 @@ EMBEDDED_FLAGS="-DALPINE_EMBEDDED -std=c++17 -Wall -Wextra -Werror -fno-exceptio
 VERSION=$(cat "$ROOT_DIR/VERSION")
 
 g++ $EMBEDDED_FLAGS -Ibindings/cpp -Ibindings/c \
-  bindings/cpp/embedded_test.cpp -L"$ROOT_DIR/dist/c" "-lalpine-$VERSION" \
+  bindings/cpp/embedded_test.cpp -L"$ROOT_DIR/dist/c" "-l:libalpine-$VERSION.a" \
   -o "$DIST/embedded_test"
 
 echo "Embedded C++ binding built successfully (--embedded mode)."

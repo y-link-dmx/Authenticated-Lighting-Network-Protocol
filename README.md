@@ -1,5 +1,11 @@
 # ALPINE — Authenticated Lighting Protocol (v1.0)
 
+[![Rust](https://img.shields.io/badge/Rust-crates.io-000000?style=for-the-badge&logo=rust&logoColor=white)](https://crates.io/crates/alpine-protocol-rs)
+[![Python](https://img.shields.io/badge/Python-PyPI-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://pypi.org/project/alnp/)
+[![C](https://img.shields.io/badge/C-GitHub%20Packages-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/orgs/alpine-core/packages?tab=packages&q=alnp-c)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge)](LICENSE)
+
+---
 ALPINE is a **modern, secure, vendor-agnostic lighting control protocol** designed to replace legacy systems such as sACN/E1.31, RDMnet, and proprietary device APIs.
 
 ALPINE provides:

@@ -2,9 +2,15 @@
 
 All notable changes to ALPINE will be documented in this file.
 
--## [1.2.2] - 2025-11-28
+## [1.2.3] - 2025-11-29
+- Add `sdk::DiscoveryClient` so discovery is stateless, explicit, and surfaces identity/address/capabilities along with a signed flag.
+- Clarify the README workflow (DiscoveryClient -> AlpineClient::connect -> start_stream -> send_frame) and highlight the new pre-session guarantee.
+- Improve `ClientError` diagnostics so discovery/handshake failures preserve their concrete causes.
+
+## [1.2.2] - 2025-11-28
 - Added regression tests covering profile validation failures, deterministic `config_id`, and the immutability guarantee once streaming begins.
 - Hardened the embedded build script so it runs `build_c.sh` first and links against `libalpine-<version>.a`, enabling the `embedded` workflow to pass.
+
 ## [1.2.1] - 2025-11-28
 - Introduce language-specific SDK layers (`src/alnp/src/sdk`, `bindings/ts/src/sdk`, `bindings/python/src/alnp/sdk`, `bindings/cpp/sdk`) with ergonomic APIs (`connect`, `send_frame`, `control`, keepalive) that now select stream profiles.
 - Add Stream Profiles (Auto/Realtime/Install) that compile into deterministic `config_id`s, validate weights, and cannot be changed once streaming starts; `start_stream` binds the profile.
@@ -30,7 +36,7 @@ All notable changes to ALPINE will be documented in this file.
 ## [1.0.7] - 2025-11-27
 - Keep the crate name `alpine-core` for crates.io while exposing the library as `alpine` so existing tests and consumers can still import `alpine::...`.
 - Restore `libalpine.a` as the C artifact while keeping the GHCR image packaging and docs bundle unchanged.
-- Continue shipping docs + artifacts together so release pages always include README/SPEC/docs and the tarball on GHCR.
+- Continue shipping docs + artifacts together so every release always includes README/SPEC/docs and the tarball on GHCR.
 
 ## [1.0.6] - 2025-11-27
 - Rename the Rust crate to `alpine-core` and ship it as `alpine-core-1.0.6` so future updates belong to the alpine-core organization.

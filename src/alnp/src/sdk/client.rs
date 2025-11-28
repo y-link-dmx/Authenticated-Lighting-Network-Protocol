@@ -8,9 +8,9 @@ use std::time::Duration;
 use tokio::sync::Mutex;
 use tokio::task::JoinHandle;
 
+use crate::control::{ControlClient, ControlCrypto};
 use crate::crypto::identity::NodeCredentials;
 use crate::crypto::X25519KeyExchange;
-use crate::control::{ControlClient, ControlCrypto};
 use crate::handshake::keepalive;
 use crate::handshake::transport::{CborUdpTransport, TimeoutTransport};
 use crate::handshake::{HandshakeContext, HandshakeError};
@@ -35,7 +35,6 @@ pub enum ClientError {
     /// Streaming transport errors (e.g., `AlnpStream::send`).
     Stream(StreamError),
 }
-
 
 impl fmt::Display for ClientError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -119,7 +118,7 @@ impl AlpineClient {
     /// Returns `ClientError::Io` for socket failures or missing session material,
     /// `ClientError::Handshake` for protocol errors, and `ClientError::Stream` for
     /// transport issues.
-   pub async fn connect(
+    pub async fn connect(
         local_addr: SocketAddr,
         remote_addr: SocketAddr,
         identity: DeviceIdentity,
@@ -129,8 +128,10 @@ impl AlpineClient {
         let key_exchange = X25519KeyExchange::new();
         let authenticator = crate::session::Ed25519Authenticator::new(credentials.clone());
 
-        let mut transport =
-            TimeoutTransport::new(CborUdpTransport::bind(local_addr, remote_addr, 2048).await?, Duration::from_secs(3));
+        let mut transport = TimeoutTransport::new(
+            CborUdpTransport::bind(local_addr, remote_addr, 2048).await?,
+            Duration::from_secs(3),
+        );
         let session = AlnpSession::connect(
             identity,
             capabilities.clone(),
@@ -185,10 +186,7 @@ impl AlpineClient {
     /// Returns `ClientError::Io` for socket issues or session material that is missing.
     /// Returns `ClientError::Handshake` if the profile cannot be bound or the session rejects it.
     #[must_use]
-    pub async fn start_stream(
-        &mut self,
-        profile: StreamProfile,
-    ) -> Result<String, ClientError> {
+    pub async fn start_stream(&mut self, profile: StreamProfile) -> Result<String, ClientError> {
         let compiled = profile
             .compile()
             .map_err(|err| HandshakeError::Protocol(err.to_string()))?;

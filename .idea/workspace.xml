@@ -28,11 +28,22 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="Added ALPINE benchmarks and E2E tests.&#10;&#10;- Introduced `benchmarks.md` outlining methodology and metrics for streaming latency and protocol evaluations.&#10;- Added Criterion-based performance benchmarks for ALPINE, Art-Net, and sACN under `benches/`.&#10;- Implemented E2E UDP tests for streaming layer with `streaming_udp_e2e.rs`.&#10;- Modularized test utilities and shared config under `benches/common/`.&#10;- Updated ALPINE documentation to reflect benchmark results and methodology.">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/python-release.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/python-release.yml" afterDir="false" />
+    <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/build_embedded_cpp.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build_embedded_cpp.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/benches/artnet_streaming.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/benches/artnet_streaming.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/benches/common/config.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/benches/common/config.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/src/profile.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/profile.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/src/sdk/client.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/sdk/client.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/src/sdk/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/sdk/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/src/session/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/session/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/alnp/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/target/.rustc_info.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/tests/e2e/streaming_udp_e2e.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/e2e/streaming_udp_e2e.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/alnp/tests/feature_suite.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/feature_suite.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,6 +125,7 @@
 }</component>
   <component name="ProjectId" id="35scZdLRMdSmp6Je5pWdlrMsc83" />
   <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -338,7 +350,28 @@
       <option name="presentableId" value="LOCAL−00008" />
       <updated>1764149347873</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL−00009" summary="Refactor and optimize GitHub Actions workflows, update rustc info, and fix shell script compatibility.">
+      <option name="closed" value="true" />
+      <created>1764322570971</created>
+      <option name="number" value="LOCAL−00009" />
+      <option name="presentableId" value="LOCAL−00009" />
+      <updated>1764322570972</updated>
+    </task>
+    <task id="LOCAL−00010" summary="Refactor GitHub Actions workflow, adjust Python artifact handling, and fix C++ discovery request logic.">
+      <option name="closed" value="true" />
+      <created>1764322711888</created>
+      <option name="number" value="LOCAL−00010" />
+      <option name="presentableId" value="LOCAL−00010" />
+      <updated>1764322711888</updated>
+    </task>
+    <task id="LOCAL−00011" summary="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing.">
+      <option name="closed" value="true" />
+      <created>1764322874503</created>
+      <option name="number" value="LOCAL−00011" />
+      <option name="presentableId" value="LOCAL−00011" />
+      <updated>1764322874504</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -369,6 +402,10 @@
     <MESSAGE value="Removed all test code, utilities, and performance benchmarks related to ALNP." />
     <MESSAGE value="Added ALPINE benchmarks and E2E tests.&#10;&#10;- Introduced `benchmarks.md` outlining methodology and metrics for streaming latency and protocol evaluations.&#10;- Added Criterion-based performance benchmarks for ALPINE, Art-Net, and sACN under `benches/`.&#10;- Implemented E2E UDP tests for streaming layer with `streaming_udp_e2e.rs`.&#10;- Modularized test utilities and shared config under `benches/common/`.&#10;- Updated ALPINE documentation to reflect benchmark results and methodology." />
     <MESSAGE value="Expand roadmap with detailed ALPINE protocol phases" />
-    <option name="LAST_COMMIT_MESSAGE" value="Expand roadmap with detailed ALPINE protocol phases" />
+    <MESSAGE value="Add `Debug` trait to core structs for better traceability" />
+    <MESSAGE value="Refactor and optimize GitHub Actions workflows, update rustc info, and fix shell script compatibility." />
+    <MESSAGE value="Refactor GitHub Actions workflow, adjust Python artifact handling, and fix C++ discovery request logic." />
+    <MESSAGE value="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing." />
   </component>
 </project>

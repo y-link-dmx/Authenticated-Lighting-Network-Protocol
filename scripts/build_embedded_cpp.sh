@@ -1,5 +1,6 @@
 #!/bin/sh
 set -eu
+set -o pipefail 2>/dev/null || true
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 DIST="$ROOT_DIR/dist/embedded"

@@ -1,7 +1,7 @@
 use sha2::{Digest, Sha256};
 
 /// Declares intent for streaming behavior.
-/// 
+///
 /// The value is emitted into the config ID calculation so runtime decisions stay deterministic.
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -135,7 +135,6 @@ impl Default for StreamProfile {
     fn default() -> Self {
         Self::auto()
     }
-
 }
 
 #[cfg(test)]
@@ -155,6 +154,20 @@ mod tests {
         let a = StreamProfile::auto().compile().unwrap();
         let b = StreamProfile::auto().compile().unwrap();
         assert_eq!(a.config_id(), b.config_id());
+    }
+
+    #[test]
+    fn default_profile_falls_back_to_auto() {
+        let default = StreamProfile::default().compile().unwrap();
+        let auto = StreamProfile::auto().compile().unwrap();
+        assert_eq!(default.config_id(), auto.config_id());
+    }
+
+    #[test]
+    fn builtin_profiles_have_distinct_ids() {
+        let realtime = StreamProfile::realtime().compile().unwrap();
+        let install = StreamProfile::install().compile().unwrap();
+        assert_ne!(realtime.config_id(), install.config_id());
     }
 
     #[test]

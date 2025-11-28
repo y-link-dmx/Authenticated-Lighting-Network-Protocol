@@ -16,9 +16,9 @@ use alpine::handshake::{HandshakeContext, HandshakeError, HandshakeMessage, Hand
 use alpine::messages::{
     CapabilitySet, ChannelFormat, ControlOp, DeviceIdentity, ErrorCode, FrameEnvelope, MessageType,
 };
+use alpine::profile::StreamProfile;
 use alpine::session::{AlnpSession, JitterStrategy, StaticKeyAuthenticator};
 use alpine::stream::{AlnpStream, FrameTransport};
-use alpine::profile::StreamProfile;
 
 /// Simple transport bridge used to run two handshake participants in tests.
 struct PipeTransport {

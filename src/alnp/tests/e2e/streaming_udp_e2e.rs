@@ -5,8 +5,8 @@ use serde_cbor;
 use tokio::net::UdpSocket;
 
 use alpine::messages::{ChannelFormat, FrameEnvelope, MessageType};
-use alpine::session::JitterStrategy;
 use alpine::profile::StreamProfile;
+use alpine::session::JitterStrategy;
 use alpine::stream::{AlnpStream, FrameTransport};
 
 use alpine::e2e_common::run_udp_handshake;

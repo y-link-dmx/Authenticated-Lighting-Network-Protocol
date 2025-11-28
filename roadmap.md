@@ -5,8 +5,8 @@ This roadmap shows where ALPINE is heading, which release will carry each capabi
 
 ---
 
-## Phase 1 – Core Foundations (v1.0, completed)
-**Status:** ✅ Complete
+## Phase 1 ƒ?" Core Foundations (v1.0, completed)
+**Status:** ƒo. Complete
 
 **Goal:** Deliver a rock-solid baseline that works on Ethernet and WiFi without special configuration.
 
@@ -19,21 +19,22 @@ Real deployments now rely on ALPINE v1 with predictable behavior.
 
 ---
 
-## Phase 2 – Stream Profiles & Selectable Behavior (target v1.2)
-**Status:** In progress
+## Phase 2 ƒ?" Stream Profiles & Selectable Behavior (target v1.2)
+**Status:** ✅ Complete (v1.2.2)
 
 **Goal:** Let users choose between safe defaults (Auto), low latency (Realtime), or install-friendly behavior without compromising guarantees.
 
 - Introduce stream profiles as first-class objects with validation and immutable config IDs.
 - Bind profile identity to the session to prevent unsafe runtime swaps.
 - Provide deterministic fallbacks when profiles conflict.
+- Surface the guarantees through the SDK documentation and release playbook so Phase 2 stays frozen.
 
 **Outcome:**  
-Operators select predictable behavior tailored to their venue.
+Operators select predictable behavior tailored to their venue, and Phase 2 is now frozen with versioned tests, docs, and release flows.
 
 ---
 
-## Phase 3 – Adaptive Streaming & Network Resilience (target v1.3)
+## Phase 3 ƒ?" Adaptive Streaming & Network Resilience (target v1.3)
 **Status:** Planned
 
 **Goal:** Keep ALPINE stable even when packet loss, jitter, or late frames appear.
@@ -47,7 +48,7 @@ The protocol degrades gracefully while preserving temporal correctness.
 
 ---
 
-## Phase 4 – Custom Profiles & Preferences (target v1.4)
+## Phase 4 ƒ?" Custom Profiles & Preferences (target v1.4)
 **Status:** Planned
 
 **Goal:** Let advanced users express latency/smoothness/resilience preferences without exposing low-level flags.
@@ -61,7 +62,7 @@ Power users get control while the runtime remains deterministic.
 
 ---
 
-## Phase 5 – Security & Trust Hardening (target v1.5)
+## Phase 5 ƒ?" Security & Trust Hardening (target v1.5)
 **Status:** Planned
 
 **Goal:** Harden identities, replay protection, and optional encryption without adding gimmicks.
@@ -75,8 +76,8 @@ Security is built in, not bolted on.
 
 ---
 
-## Phase 6 – SDKs, Tooling & Developer Experience (v1.11 completed)
-**Status:** ✅ Complete
+## Phase 6 ƒ?" SDKs, Tooling & Developer Experience (v1.11 completed)
+**Status:** ƒo. Complete
 
 **Goal:** Make ALPINE the easiest protocol to adopt via SDKs and documentation.
 
@@ -89,7 +90,7 @@ App developers rely on SDK helpers while embedded or low-level teams interact wi
 
 ---
 
-## Phase 7 – Ecosystem Growth & Compatibility (target v2.0)
+## Phase 7 ƒ?" Ecosystem Growth & Compatibility (target v2.0)
 **Status:** Planned
 
 **Goal:** Expand ALPINE safely as the platform grows.
@@ -105,6 +106,6 @@ ALPINE becomes a stable foundation everyone can build on.
 
 ## Design Commitment
 
-> **Under packet loss, jitter, or delay, ALPINE degrades visual quality—never temporal correctness.**
+> **Under packet loss, jitter, or delay, ALPINE degrades visual qualityƒ?"never temporal correctness.**
 
 This principle guides every phase.

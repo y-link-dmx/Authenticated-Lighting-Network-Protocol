@@ -26,3 +26,5 @@ pub use profile::{CompiledStreamProfile, StreamProfile};
 pub use sdk::AlpineClient;
 pub use session::{AlnpRole, AlnpSession, JitterStrategy};
 pub use stream::{AlnpStream, FrameTransport};
+
+mod c_api;

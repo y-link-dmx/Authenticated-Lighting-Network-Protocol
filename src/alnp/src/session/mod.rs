@@ -116,10 +116,7 @@ impl AlnpSession {
     /// Sets the stream profile that determines runtime behavior.
     ///
     /// This method locks the profile until streaming begins to enforce immutability.
-    pub fn set_stream_profile(
-        &self,
-        profile: CompiledStreamProfile,
-    ) -> Result<(), HandshakeError> {
+    pub fn set_stream_profile(&self, profile: CompiledStreamProfile) -> Result<(), HandshakeError> {
         let locked = self
             .profile_locked
             .lock()
@@ -386,10 +383,20 @@ mod session_tests {
         let session = AlnpSession::new(AlnpRole::Controller);
         let compiled = StreamProfile::realtime().compile().unwrap();
         session.set_stream_profile(compiled.clone()).unwrap();
-        assert_eq!(
-            session.profile_config_id().unwrap(),
-            compiled.config_id()
-        );
+        assert_eq!(session.profile_config_id().unwrap(), compiled.config_id());
+    }
+
+    #[test]
+    fn config_id_stays_locked_after_streaming() {
+        let session = AlnpSession::new(AlnpRole::Controller);
+        let compiled = StreamProfile::install().compile().unwrap();
+        session.set_stream_profile(compiled.clone()).unwrap();
+        let before_config = session.profile_config_id().unwrap();
+        session.mark_streaming();
+        assert_eq!(session.profile_config_id().unwrap(), before_config);
+        assert!(session
+            .set_stream_profile(StreamProfile::default().compile().unwrap())
+            .is_err());
     }
 }
 

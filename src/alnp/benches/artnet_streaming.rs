@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use criterion::{black_box, BenchmarkId, Criterion, criterion_group, criterion_main};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 
 #[path = "common/mod.rs"]
 mod common;
@@ -38,10 +38,8 @@ fn parse_artnet_packet(data: &[u8]) -> Result<Vec<u8>, &'static str> {
     if &data[..ARTNET_ID.len()] != ARTNET_ID {
         return Err("bad id");
     }
-    let length = u16::from_be_bytes([
-        data[ARTNET_ID.len() + 8],
-        data[ARTNET_ID.len() + 9],
-    ]) as usize;
+    let length =
+        u16::from_be_bytes([data[ARTNET_ID.len() + 8], data[ARTNET_ID.len() + 9]]) as usize;
     if data.len() < ARTNET_ID.len() + 10 + length {
         return Err("length");
     }

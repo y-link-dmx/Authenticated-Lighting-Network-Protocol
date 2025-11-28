@@ -41,7 +41,7 @@ For more details, see the protocol documents:
 
 ## Continuous Integration
 
-- `UDP E2E Tests` workflow (`.github/workflows/e2e-tests.yml`) runs `cargo test --tests -- --ignored` from `src/alnp`, exercising the real UDP handshake/control/streaming paths on Linux.
+- `UDP E2E Tests` workflow (`.github/workflows/e2e-tests.yml`) runs `cargo test --tests -- --ignored` from `bindings/rust/alpine-protocol-rs`, exercising the real UDP handshake/control/streaming paths on Linux.
 
 ## Publishing & package registries
 
@@ -49,11 +49,11 @@ This project publishes artifacts for Rust, C, TypeScript, and Python. Before run
 
 | Registry | Environment variable | Notes |
 | --- | --- | --- |
-| GitHub Packages (Rust) | `CARGO_REGISTRIES_GITHUB_TOKEN` | Used by `cargo publish --registry github`. The GitHub registry index is configured in `src/alnp/Cargo.toml`; also point `CARGO_HOME` at `<repo>/.cargo` (or add the same `[registries.github]` entry inside your global Cargo config) so that the registry is loaded before publishing—otherwise `cargo publish --registry github` will panic with “remote registries must have config”. |
+| GitHub Packages (Rust) | `CARGO_REGISTRIES_GITHUB_TOKEN` | Used by `cargo publish --registry github`. The GitHub registry index is configured in `bindings/rust/alpine-protocol-rs/Cargo.toml`; also point `CARGO_HOME` at `<repo>/.cargo` (or add the same `[registries.github]` entry inside your global Cargo config) so that the registry is loaded before publishing—otherwise `cargo publish --registry github` will panic with “remote registries must have config”. |
 | TypeScript (npm/PNPM) | `NPM_TOKEN` or `PNPM_TOKEN` | Required for publishing `dist/ts` via `npm publish` / `pnpm publish`. |
 | Python (PyPI or GitHub) | `PYPI_API_TOKEN` (or `TWINE_USERNAME`/`TWINE_PASSWORD`) | `scripts/build_python.sh` generates wheel/sdist artifcats; upload them with `twine upload`. |
 | C artifacts | `GITHUB_TOKEN` | Use this token to push `dist/c` (static library + header) to GitHub Packages or release assets. |
-| Release validation | — | Follow `docs/release_process.md` before tagging: run `cargo test --manifest-path src/alnp/Cargo.toml`, `scripts/build_c.sh`, `scripts/build_embedded_cpp.sh`, and every binding build so tagging is boring and repeatable. |
+| Release validation | — | Follow `docs/release_process.md` before tagging: run `cargo test --manifest-path bindings/rust/alpine-protocol-rs/Cargo.toml`, `scripts/build_c.sh`, `scripts/build_embedded_cpp.sh`, and every binding build so tagging is boring and repeatable. |
 
 ## Language Bindings
 
@@ -75,9 +75,9 @@ Each binding provides:
 
 ## SDK layers
 
-- **Rust**: `src/alnp/src/sdk` exposes `AlpineClient`, which orchestrates discovery, handshake, streaming frames, and keepalive over UDP while reusing the control/crypto helpers.
+- **Rust**: `bindings/rust/alpine-protocol-rs/src/sdk` exposes `AlpineClient`, which orchestrates discovery, handshake, streaming frames, and keepalive over UDP while reusing the control/crypto helpers.
 - **TypeScript**: `bindings/ts/src/sdk/client.ts` wraps the binding helpers with a Node UDP client that exposes `discover()`, `handshake()`, and `sendFrame()` convenience methods.
-- **Python**: `bindings/python/src/alnp/sdk` provides a socket-driven class that builds CBOR discovery/control/frame payloads and leaves network I/O to the consumer.
+- **Python**: `bindings/python/bindings/rust/alpine-protocol-rs/sdk` provides a socket-driven class that builds CBOR discovery/control/frame payloads and leaves network I/O to the consumer.
 - **C++**: `bindings/cpp/sdk/alpine_sdk.hpp` defines `AlpineTransport` and `AlpineClient` so you can feed encoded discovery/control/frame bytes into your own transport implementation.
 
 These SDKs are the *recommended* application entry points across languages. They orchestrate discovery, handshake, streaming, and keepalive workflows while reusing the underlying binding helpers. Reserve the auto-generated bindings for embedded / constrained environments where the SDK layer cannot run (e.g., ESP32 builds, C-only systems, or highly controlled runtimes).
@@ -106,7 +106,7 @@ ALPINE treats documentation as part of the API contract. Every public surface ac
 
 Every language ships two layers:
 
-1. **High-level SDK** (Rust `src/alnp/src/sdk`, TypeScript `bindings/ts/src/sdk`, Python `bindings/python/src/alnp/sdk`, C++ `bindings/cpp/sdk/alpine_sdk.hpp`): this layer is the recommended entry point for most applications. It hides discovery/handshake plumbing behind idiomatic helpers like `connect()`, `start_stream()`, `send_frame()`, and control/keepalive utilities while enforcing stream profiles and config IDs.
+1. **High-level SDK** (Rust `bindings/rust/alpine-protocol-rs/src/sdk`, TypeScript `bindings/ts/src/sdk`, Python `bindings/python/src/alnp/sdk`, C++ `bindings/cpp/sdk/alpine_sdk.hpp`): this layer is the recommended entry point for most applications. It hides discovery/handshake plumbing behind idiomatic helpers like `connect()`, `start_stream()`, `send_frame()`, and control/keepalive utilities while enforcing stream profiles and config IDs.
 2. **Low-level bindings** (`bindings/c`, `bindings/cpp/alnp.hpp`, `bindings/js`, `bindings/python/src/alnp`): these provide the raw CBOR helpers, enabling strict embedded or allocation-free environments. They intentionally lack runtime conveniences so the SDK keeps doing the heavy lifting for general applications.
 
 Start with the SDKs wherever possible, and fall back to the bindings when you must manage buffers, heap usage, or exotic platforms yourself.
@@ -125,7 +125,7 @@ alongside the desktop releases.
 
 ALPINE relies on a consistent release flow so that tagging the repository is boring:
 
-1. Run `cargo test --manifest-path src/alnp/Cargo.toml` to verify every SDK helper, profile test, and E2E suite.
+1. Run `cargo test --manifest-path bindings/rust/alpine-protocol-rs/Cargo.toml` to verify every SDK helper, profile test, and E2E suite.
 2. Run `scripts/build_c.sh` (which runs `cargo build --release`, copies `libalpine.a`, and stages `bindings/c`) and confirm `dist/c` contains the published headers/libraries.
 3. Run `scripts/build_embedded_cpp.sh` to prove the constrained C++ build still links against `libalpine-<version>.a` with `ALPINE_EMBEDDED` flags.
 4. Run the TypeScript + Python build scripts described in `docs/release_process.md` so the published clients match the SDK guarantees.

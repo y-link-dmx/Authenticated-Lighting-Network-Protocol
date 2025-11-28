@@ -81,7 +81,7 @@ Security is built in, not bolted on.
 
 **Goal:** Make ALPINE the easiest protocol to adopt via SDKs and documentation.
 
-- Added SDK layers for Rust (`src/alnp/src/sdk`), TypeScript (`bindings/ts/src/sdk`), Python (`bindings/python/src/alnp/sdk`), and C++ (`bindings/cpp/sdk/alpine_sdk.hpp`) so developers can call `connect()`, `send_frame()`, `control()`, and keepalive helpers.
+- Added SDK layers for Rust (`bindings/rust/alpine-protocol-rs/src/sdk`), TypeScript (`bindings/ts/src/sdk`), Python (`bindings/python/bindings/rust/alpine-protocol-rs/sdk`), and C++ (`bindings/cpp/sdk/alpine_sdk.hpp`) so developers can call `connect()`, `send_frame()`, `control()`, and keepalive helpers.
 - Position SDKs as the recommended entry points in the README/docs while keeping bindings stable for constrained environments.
 - Embedded validation, docs packaging, and GHCR C packages continue to accompany each release.
 

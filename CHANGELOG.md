@@ -2,19 +2,13 @@
 
 All notable changes to ALPINE will be documented in this file.
 
-<<<<<<< HEAD
-- ## [Unreleased] - Phase 3.1–3.2 (Detection + Recovery)
-- Introduce deterministic `NetworkConditions` metrics (loss ratio, late frame rate, jitter) so every session can observe per-stream network health without adaptive behavior.
-- Add regression tests proving the metrics stay deterministic when sequences miss, deadlines slip, or intervals vary.
-- Ship a deterministic `RecoveryMonitor` that starts/completes recovery on sustained or burst loss and annotates retransmitted frames with observable metadata so forced keyframes signal their intent without rewinding the timeline.
-- Implement Phase 3.3.1’s pure adaptation core (deterministic state + decision engine) scoped to keyframe cadence, delta depth, and deadlines, and record its state without integrating yet.
-- Begin Phase 3.3.2 by wiring that engine into the streaming path: network + recovery drive `AdaptationState`, and each frame carries the resulting metadata (`alpine_adaptation` plus keyframe flag).
-=======
+## [1.2.4] - 2025-11-29
+- Bump Rust, TypeScript, and Python package versions to `1.2.4` so the SDK release tags align with publishable artifacts.
+
 ## [1.2.3] - 2025-11-29
 - Add `sdk::DiscoveryClient` so discovery is stateless, explicit, and surfaces identity/address/capabilities along with a signed flag.
 - Clarify the README workflow (DiscoveryClient -> AlpineClient::connect -> start_stream -> send_frame) and highlight the new pre-session guarantee.
 - Improve `ClientError` diagnostics so discovery/handshake failures preserve their concrete causes.
->>>>>>> 7739d68 (feat: add sdk discovery assistant)
 
 ## [1.2.2] - 2025-11-28
 - Added regression tests covering profile validation failures, deterministic `config_id`, and the immutability guarantee once streaming begins.
@@ -24,11 +18,18 @@ All notable changes to ALPINE will be documented in this file.
 - Introduce deterministic `NetworkConditions` metrics (loss ratio, late frame rate, jitter) so every session can observe per-stream network health without adaptive behavior.
 - Add regression tests proving the metrics stay deterministic when sequences miss, deadlines slip, or intervals vary.
 - Ship a deterministic `RecoveryMonitor` that starts/completes recovery on sustained or burst loss and annotates retransmitted frames with observable metadata so forced keyframes signal their intent without rewinding the timeline.
+- Implement Phase 3.3.1’s pure adaptation core (deterministic state + decision engine) scoped to keyframe cadence, delta depth, and deadlines, and record its state without integrating yet.
+- Begin Phase 3.3.2 by wiring that engine into the streaming path: network + recovery drive `AdaptationState`, and every frame carries the resulting metadata (`alpine_adaptation` plus keyframe flag).
+
+## [Unreleased] - Phase 3.1–3.2 (Detection + Recovery)
+- Introduce deterministic `NetworkConditions` metrics (loss ratio, late frame rate, jitter) so every session can observe per-stream network health without adaptive behavior.
+- Add regression tests proving the metrics stay deterministic when sequences miss, deadlines slip, or intervals vary.
+- Ship a deterministic `RecoveryMonitor` that starts/completes recovery on sustained or burst loss and annotates retransmitted frames with observable metadata so forced keyframes signal their intent without rewinding the timeline.
 - Introduce Phase 3.3.1's pure adaptation core (deterministic state + decision engine) that governs keyframe cadence, delta depth, and deadline offsets, and records its state without integration yet.
 - Begin Phase 3.3.2 by wiring the adaptation state into the streaming path: network + recovery update `AdaptationState`, and every frame carries `alpine_adaptation` metadata plus a keyframe flag.
 
 ## [1.2.1] - 2025-11-28
-- Introduce language-specific SDK layers (`src/alnp/src/sdk`, `bindings/ts/src/sdk`, `bindings/python/src/alnp/sdk`, `bindings/cpp/sdk`) with ergonomic APIs (`connect`, `send_frame`, `control`, keepalive) that now select stream profiles.
+- Introduce language-specific SDK layers (`bindings/rust/alpine-protocol-rs/src/sdk`, `bindings/ts/src/sdk`, `bindings/python/bindings/rust/alpine-protocol-rs/sdk`, `bindings/cpp/sdk`) with ergonomic APIs (`connect`, `send_frame`, `control`, keepalive) that now select stream profiles.
 - Add Stream Profiles (Auto/Realtime/Install) that compile into deterministic `config_id`s, validate weights, and cannot be changed once streaming starts; `start_stream` binds the profile.
 - Added tests covering profile validation failures, config_id determinism, and immutability once streaming commences.
 - Update docs/README to position those SDKs as the recommended application entry points while keeping the auto-generated bindings stable for embedded use.

@@ -3,7 +3,7 @@
 Use these steps to keep Phase 2 releases boring, repeatable, and documented. The CI workflows mirror this checklist so that tagging the repository simply re-triggers the same validation pipeline.
 
 1. **Run the Rust suite**  
-   `cargo test --manifest-path src/alnp/Cargo.toml`  
+   `cargo test --manifest-path bindings/rust/alpine-protocol-rs/Cargo.toml`  
    Verifies SDK/unit tests, the profile guarantees, and the UDP E2E suites that guard the handshake, control, and streaming helpers.
 
 2. **Build the C artifacts**  

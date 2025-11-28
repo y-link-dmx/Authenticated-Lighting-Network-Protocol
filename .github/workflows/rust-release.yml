@@ -16,15 +16,15 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Test
         run: |
-          cd src/alnp
+          cd bindings/rust/alpine-protocol-rs
           cargo test
       - name: Build
         run: |
-          cd src/alnp
+          cd bindings/rust/alpine-protocol-rs
           cargo build --release
       - name: Package
         run: |
-          cd src/alnp
+          cd bindings/rust/alpine-protocol-rs
           cargo package --allow-dirty --no-verify
           mkdir -p ../../dist/rust
           cp target/package/alpine-protocol-rs-*.crate ../../dist/rust/
@@ -38,7 +38,7 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
-          cd src/alnp
+          cd bindings/rust/alpine-protocol-rs
           cargo publish --token "$CARGO_REGISTRY_TOKEN" --registry crates-io
       - name: Release notes
         uses: softprops/action-gh-release@v2

@@ -6,7 +6,7 @@ VERSION=$(cat "$ROOT_DIR/VERSION")
 DIST="$ROOT_DIR/dist/c"
 
 mkdir -p "$DIST"
-cd "$ROOT_DIR/src/alnp"
+cd "$ROOT_DIR/bindings/rust/alpine-protocol-rs"
 
 echo "==> Building static library for C consumers (version $VERSION)"
 echo "==> Validating UDP E2E tests (cargo test --tests -- --ignored)"

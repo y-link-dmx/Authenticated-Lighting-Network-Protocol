@@ -101,7 +101,10 @@ inline int buildDiscoveryRequest(const DiscoveryRequest& request,
   alnp_discovery_request_t c_req;
   c_req.client_nonce.data = request.client_nonce;
   c_req.client_nonce.len = request.client_nonce_len;
-  c_req.requested = request.requested;
+  c_req.requested =
+      request.requested && request.requested_len > 0
+          ? const_cast<const char**>(request.requested)
+          : nullptr;
   c_req.requested_len = request.requested_len;
 
   auto descriptor = out.descriptor();

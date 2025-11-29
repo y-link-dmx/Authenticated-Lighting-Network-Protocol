@@ -34,52 +34,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing.">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/bindings-publish.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.github/workflows/sdk-publish.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.github/workflows/sdk-python-publish.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.github/workflows/sdk-ts-publish.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bindings/ts/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/c/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/c/alpine_sdk.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/rust/src/client.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/rust/src/error.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/rust/src/transport/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/rust/src/transport/udp.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/c-release.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/docs-release.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/python-release.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/rust-release.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/ts-release.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VERSION" beforeDir="false" afterPath="$PROJECT_DIR$/VERSION" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/python/src/alnp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/src/alnp/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/python/src/alnp/sdk/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/python/src/alnp/sdk/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/src/alnp/profile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/sdk/client.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/sdk/discovery.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/sdk/mod.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/ts/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/ts/src/sdk/client.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/ts/src/sdk/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bindings/ts/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/implementation_audit.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/implementation_audit.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/release_process.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/release_process.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/sdk/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/rust/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/rust/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/rust/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts/src/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,12 +93,12 @@
       </RecentBranches>
     </option>
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/alpine-core/Authenticated-Lighting-Protocol.git",
-    "accountId": "37f597b7-0b3a-468c-9456-8175f1be8b0d"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/alpine-core/Authenticated-Lighting-Protocol.git&quot;,
+    &quot;accountId&quot;: &quot;37f597b7-0b3a-468c-9456-8175f1be8b0d&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.toml" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/docs/benchmarks.md" root0="FORCE_HIGHLIGHTING" root1="SKIP_INSPECTION" />

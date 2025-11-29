@@ -43,6 +43,8 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
+          cache-dependency-path: sdk/ts/pnpm-lock.yaml
+
 
       - name: Install dependencies
         run: |

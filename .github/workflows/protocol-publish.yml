@@ -43,6 +43,9 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd dist/ts
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+          fi
           npm publish --access public
       - name: Publish Python bindings
         if: startsWith(github.ref, 'refs/tags/v')

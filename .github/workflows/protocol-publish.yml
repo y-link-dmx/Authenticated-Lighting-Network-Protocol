@@ -24,6 +24,8 @@ jobs:
         run: scripts/build_c.sh
       - name: Validate embedded C++
         run: scripts/build_embedded_cpp.sh
+      - name: Enable pnpm
+        run: corepack enable pnpm
       - name: Build TypeScript protocol helpers
         run: scripts/build_ts.sh
       - name: Build Python protocol helpers

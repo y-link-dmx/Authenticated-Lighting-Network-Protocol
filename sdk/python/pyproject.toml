@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "alpine-sdk"
-version = "0.1.2"
+version = "0.1.3"
 description = "High-level ALPINE Python SDK depending on the protocol layer."
 authors = [{ name = "alpine-core" }]
 dependencies = [
-  "alnp >=2.0.13",
+  "alnp >=2.0.14",
   "cbor2 >=5"
 ]
 requires-python = ">=3.10"

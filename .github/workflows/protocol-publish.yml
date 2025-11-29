@@ -9,27 +9,45 @@ on:
 jobs:
   protocol:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write   # ✅ REQUIRED for PyPI Trusted Publisher (OIDC)
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+
       - name: Test protocol
         run: cargo test --manifest-path protocol/rust/alpine-protocol-rs/Cargo.toml
+
       - name: Build C artifacts
         run: scripts/build_c.sh
+
       - name: Validate embedded C++
         run: scripts/build_embedded_cpp.sh
+
       - name: Enable pnpm
         run: corepack enable pnpm
+
       - name: Build TypeScript protocol helpers
         run: scripts/build_ts.sh
+
       - name: Build Python protocol helpers
         run: scripts/build_python.sh
+
+      # -------------------------
+      # Rust (crates.io)
+      # -------------------------
       - name: Publish Rust crate
         if: startsWith(github.ref, 'refs/tags/v')
         env:
@@ -37,6 +55,10 @@ jobs:
         run: |
           cd protocol/rust/alpine-protocol-rs
           cargo publish --token "$CARGO_REGISTRY_TOKEN" --registry crates-io
+
+      # -------------------------
+      # TypeScript (npm)
+      # -------------------------
       - name: Publish TypeScript bindings
         if: startsWith(github.ref, 'refs/tags/v')
         env:
@@ -47,12 +69,13 @@ jobs:
             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
           fi
           npm publish --access public
+
+      # -------------------------
+      # Python (PyPI – Trusted Publisher via OIDC)
+      # -------------------------
       - name: Publish Python protocol helpers
         if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          TWINE_USERNAME: "__token__"
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
           python -m pip install --upgrade twine
           cd dist/python
-          twine upload --non-interactive dist/*
+          twine upload dist/*

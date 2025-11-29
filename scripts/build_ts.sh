@@ -6,7 +6,7 @@ VERSION=$(cat "$ROOT_DIR/VERSION")
 DIST="$ROOT_DIR/dist/ts"
 
 mkdir -p "$DIST"
-cd "$ROOT_DIR/bindings/ts"
+cd "$ROOT_DIR/protocol/ts"
 
 if command -v pnpm >/dev/null 2>&1; then
   PM=pnpm

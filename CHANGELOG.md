@@ -2,6 +2,19 @@
 
 All notable changes to ALPINE will be documented in this file.
 
+## [Unreleased] - Phase 0 (Modular architecture split & release)
+- Move `alpine-protocol-rs` under `protocol/rust/` and keep the crate focused on wire helpers, crypto primitives, and stream profiles. `AlpineClient` now lives entirely in `sdk/rust/alpine-protocol-sdk`.
+- Introduce `protocol-publish.yml` and `sdk-publish.yml`, version the protocol artifacts for `v2.0.0`, and let every SDK release follow its own semantic version set (the Rust SDK is `0.1.0` for this cycle).
+- Document the split in the README, roadmap, and release process so contributors understand the release boundaries (protocol layer for stability, SDKs for ergonomics).
+- Align the tooling so the protocol layer publishes first and SDKs run afterwards against the freshly published artifacts while keeping Phase 2 guarantees frozen.
+
+## [Unreleased] - Phase 3.1-3.2 (Detection + Recovery)
+- Introduce deterministic `NetworkConditions` metrics (loss ratio, late frame rate, jitter) so every session can observe per-stream network health without adaptive behavior.
+- Add regression tests proving those metrics stay deterministic when sequences miss, deadlines slip, or intervals vary.
+- Ship a deterministic `RecoveryMonitor` that starts/completes recovery on sustained or burst loss, annotates retransmitted frames, and never rewinds or reorders the timeline.
+- Introduce Phase 3.3.1's pure adaptation core (deterministic state + decision engine) scoped to keyframe cadence, delta depth, and deadlines without integrating yet.
+- Begin Phase 3.3.2 by wiring the adaptation state into the streaming path: network + recovery update `AdaptationState`, and every frame carries `alpine_adaptation` metadata plus a keyframe flag.
+
 ## [1.2.4] - 2025-11-29
 - Bump Rust, TypeScript, and Python package versions to `1.2.4` so the SDK release tags align with publishable artifacts.
 
@@ -14,25 +27,11 @@ All notable changes to ALPINE will be documented in this file.
 - Added regression tests covering profile validation failures, deterministic `config_id`, and the immutability guarantee once streaming begins.
 - Hardened the embedded build script so it runs `build_c.sh` first and links against `libalpine-<version>.a`, enabling the `embedded` workflow to pass.
 
-## [Unreleased] - Phase 3.1–3.2 (Detection + Recovery)
-- Introduce deterministic `NetworkConditions` metrics (loss ratio, late frame rate, jitter) so every session can observe per-stream network health without adaptive behavior.
-- Add regression tests proving the metrics stay deterministic when sequences miss, deadlines slip, or intervals vary.
-- Ship a deterministic `RecoveryMonitor` that starts/completes recovery on sustained or burst loss and annotates retransmitted frames with observable metadata so forced keyframes signal their intent without rewinding the timeline.
-- Implement Phase 3.3.1’s pure adaptation core (deterministic state + decision engine) scoped to keyframe cadence, delta depth, and deadlines, and record its state without integrating yet.
-- Begin Phase 3.3.2 by wiring that engine into the streaming path: network + recovery drive `AdaptationState`, and every frame carries the resulting metadata (`alpine_adaptation` plus keyframe flag).
-
-## [Unreleased] - Phase 3.1–3.2 (Detection + Recovery)
-- Introduce deterministic `NetworkConditions` metrics (loss ratio, late frame rate, jitter) so every session can observe per-stream network health without adaptive behavior.
-- Add regression tests proving the metrics stay deterministic when sequences miss, deadlines slip, or intervals vary.
-- Ship a deterministic `RecoveryMonitor` that starts/completes recovery on sustained or burst loss and annotates retransmitted frames with observable metadata so forced keyframes signal their intent without rewinding the timeline.
-- Introduce Phase 3.3.1's pure adaptation core (deterministic state + decision engine) that governs keyframe cadence, delta depth, and deadline offsets, and records its state without integration yet.
-- Begin Phase 3.3.2 by wiring the adaptation state into the streaming path: network + recovery update `AdaptationState`, and every frame carries `alpine_adaptation` metadata plus a keyframe flag.
-
 ## [1.2.1] - 2025-11-28
-- Introduce language-specific SDK layers (`bindings/rust/alpine-protocol-rs/src/sdk`, `bindings/ts/src/sdk`, `bindings/python/bindings/rust/alpine-protocol-rs/sdk`, `bindings/cpp/sdk`) with ergonomic APIs (`connect`, `send_frame`, `control`, keepalive) that now select stream profiles.
+- Introduce language-specific SDK layers (`sdk/rust`, `sdk/ts`, `sdk/python`, `sdk/cpp`) with ergonomic APIs (`connect`, `send_frame`, `control`, keepalive) that now select stream profiles.
 - Add Stream Profiles (Auto/Realtime/Install) that compile into deterministic `config_id`s, validate weights, and cannot be changed once streaming starts; `start_stream` binds the profile.
 - Added tests covering profile validation failures, config_id determinism, and immutability once streaming commences.
-- Update docs/README to position those SDKs as the recommended application entry points while keeping the auto-generated bindings stable for embedded use.
+- Update docs/README to position those SDKs as the recommended application entry points while keeping the auto-generated protocol helpers stable for embedded use.
 - Keep the existing release artifacts, embedded CI job, and documentation policy so every platform continues to ship consistent behavior guarantees.
 
 ## [1.0.10] - 2025-11-27
@@ -46,7 +45,7 @@ All notable changes to ALPINE will be documented in this file.
 - Document the embedded path in the README/docs so constrained targets get the same great API as desktop builds.
 
 ## [1.0.8] - 2025-11-27
-- Provide the C++ helper header (`bindings/cpp/alnp.hpp`) so C++ projects can include ALPINE without touching the raw C structs.
+- Provide the C++ helper header (`protocol/cpp/alnp.hpp`) so C++ projects can include ALPINE without touching the raw C structs.
 - Deliver the new header along with `README.md`, `SPEC.md`, and `docs/` in each release asset so documentation and libs travel together.
 - Keep the GHCR C package, TypeScript, Python, and Rust releases aligned under the `v1.0.8` tag.
 
@@ -57,7 +56,7 @@ All notable changes to ALPINE will be documented in this file.
 
 ## [1.0.6] - 2025-11-27
 - Rename the Rust crate to `alpine-core` and ship it as `alpine-core-1.0.6` so future updates belong to the alpine-core organization.
-- Update the static library export to `libalpine-core-*.a` so the C bindings still match the crate name.
+- Update the static library export to `libalpine-core-*.a` so the C protocol helpers still match the crate name.
 - Keep docs, GHCR C package, and release notes flowing with the new tag.
 
 ## [1.0.5] - 2025-11-27
@@ -73,7 +72,7 @@ All notable changes to ALPINE will be documented in this file.
 ## [1.0.2] - 2025-11-27
 - Align TS/GitHub package workflows with the `@alpine-core` scope and add npmjs/public flags.
 - Fix release artifacts to copy the actual crate/static lib names and expose Python wheels.
-- Tag the repo `v1.0.2` so CI can publish all bindings again.
+- Tag the repo `v1.0.2` so CI can publish all protocol artifacts again.
 
 ## [1.0.0] - 2025-11-23
 - First public release of ALPINE v1.
@@ -81,7 +80,7 @@ All notable changes to ALPINE will be documented in this file.
 - X25519 + Ed25519 security model with signed control envelopes.
 - Reliable control channel (retransmit/backoff/replay protection).
 - ALNP-Stream gating with jitter handling (hold-last, drop, lerp).
-- TypeScript and C bindings scaffolds; Python package stub for clients.
+- TypeScript and C protocol scaffolds; Python package stub for clients.
 
 [1.0.11]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.11
 [1.0.10]: https://github.com/alpine-core/Authenticated-Lighting-Protocol/releases/tag/v1.0.10

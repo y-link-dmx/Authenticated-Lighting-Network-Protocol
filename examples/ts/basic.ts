@@ -3,7 +3,7 @@ import {
   ControlHeader,
   ControlPayload,
   SetMode,
-} from "../../bindings/ts/src";
+} from "../../protocol/ts/src";
 
 const header: ControlHeader = {
   seq: 1,

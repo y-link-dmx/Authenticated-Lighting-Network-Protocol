@@ -2,9 +2,14 @@
 name = "alpine-protocol-sdk"
 version = "0.1.0"
 edition = "2021"
-description = "High-level SDK on top of the ALPINE bindings."
+description = "High-level SDK on top of the ALPINE protocol layer."
 authors = ["alpine-core"]
 license = "Apache-2.0"
 
 [dependencies]
-alpine-protocol-rs = { path = "../../bindings/rust/alpine-protocol-rs" }
+alpine_protocol_rs = { package = "alpine-protocol-rs", path = "../../protocol/rust/alpine-protocol-rs" }
+serde_json = "1.0"
+tokio = { version = "1.37", features = ["net", "rt", "rt-multi-thread", "time", "macros"] }
+uuid = { version = "1.18", features = ["v4"] }
+rand = "0.8"
+serde_cbor = "0.11"

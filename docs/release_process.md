@@ -1,31 +1,31 @@
 # Release Process
 
-Use these steps to keep Phase 2 releases boring, repeatable, and documented. The CI workflows mirror this checklist so that tagging the repository simply re-triggers the same validation pipeline.
+ALPINE now has two independent release flows:
 
-1. **Run the Rust suite**  
-   `cargo test --manifest-path bindings/rust/alpine-protocol-rs/Cargo.toml`  
-   Verifies SDK/unit tests, the profile guarantees, and the UDP E2E suites that guard the handshake, control, and streaming helpers.
+1. **Protocol** (`protocol-publish` workflow) – publishes `protocol/*` artifacts: Rust crate (`alpine-protocol-rs`), TypeScript protocol helpers (`@alpine-core/protocol`), Python helpers (`alnp`), and the C/C++ SDK headers/libraries.
+2. **SDK** (`sdk-publish` workflow) – publishes the SDK crates/packages (`sdk/rust` today, others in future) that depend strictly on the published protocol layer.
 
-2. **Build the C artifacts**  
-   `scripts/build_c.sh`  
-   This script runs `cargo build --release`, packages `libalpine.a` and headers into `dist/c`, and copies the C++ SDK metadata that the desktop / embedded clients consume.
+Each release cycle follows this checklist:
 
-3. **Validate the embedded flags**  
-   `scripts/build_embedded_cpp.sh`  
-   Confirms the constrained C++ binding links against `libalpine-<version>.a` with `ALPINE_EMBEDDED`, `-fno-exceptions`, `-fno-rtti`, `-Os`, and the other ESP32-safe compiler options. This mirrors `.github/workflows/embedded.yml`.
+1. **Prepare the protocol layer**
+   - Run `cargo test --manifest-path protocol/rust/alpine-protocol-rs/Cargo.toml`.
+   - Run `scripts/build_c.sh` (packages `libalpine.a`, `protocol/c`, and C++ headers).
+   - Run `scripts/build_embedded_cpp.sh` to validate the `ALPINE_EMBEDDED` flags.
+   - Run `scripts/build_ts.sh` and `scripts/build_python.sh` to produce the publishable bundles for the TypeScript and Python protocol helpers.
 
-4. **Build the TypeScript SDK**  
-   `scripts/build_ts.sh`  
-   Produces the `dist/ts` package that `@alpine-core/protocol` publishes. Run `npm pack` or `pnpm pack` as needed and check the bundled docs/SDK surfaces.
+2. **Tag the protocol release**
+   - Create a tag such as `v2.0.0` and push it to trigger `protocol-publish`.
+   - The workflow tests, packages, and publishes every protocol artifact to crates.io, npm, PyPI, and GitHub Packages.
 
-5. **Build the Python SDK**  
-   `scripts/build_python.sh`  
-   Generates wheel/sdist artifacts placed in `dist/python` so `twine upload` can publish to GitHub Packages or PyPI.
+3. **Publish the SDK**
+   - Once `protocol-publish` succeeds for the tag, `sdk-publish` is triggered automatically using the same git tag so publishing remains atomic.
+   - The SDK workflow builds/tests the SDK crate (`sdk/rust`), confirms it compiles against the released protocol artifacts, and then publishes it according to the version in `sdk/rust/Cargo.toml` (e.g., `0.1.0` today).
 
-6. **Document and package**  
-   Bundle `README.md`, `SPEC.md`, `docs/`, and the SDK layers into the release tarball so every artifact ships with the API contract. CI already copies these into the GHCR `/dist` assets for each release tag.
+Tokens to set:
 
-7. **Tag and push**  
-   Once every build/test step is green, create the release tag (e.g., `git tag v1.2.2 && git push origin v1.2.2`). The release workflows will pick up the tag, publish the Rust/C/TS/Python packages, and keep the CI jobs happy.
+- `CARGO_REGISTRY_TOKEN` (for crates.io/github)
+- `NPM_TOKEN` (for npm/PNPM)
+- `PYPI_API_TOKEN` (for PyPI/GitHub Package upload via `twine`)
+- `GITHUB_TOKEN` (for uploading artifacts or releasing)
 
-If any step above fails, fix the root cause before tagging so Phase 2 remains frozen with a reproducible release process.
+Always run the protocol checklist before tagging so both workflows operate on reproducible artifacts. Whenever a workflow fails, fix the issue locally and rerun the same commands before re-tagging.

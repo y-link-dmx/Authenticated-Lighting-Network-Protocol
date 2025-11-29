@@ -1,0 +1,25 @@
+name: SDK Publish
+
+on:
+  workflow_run:
+    workflows:
+      - Protocol Publish
+    types:
+      - completed
+
+jobs:
+  sdk:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Test SDK
+        run: cargo test --manifest-path sdk/rust/Cargo.toml
+      - name: Publish SDK crate
+        if: startsWith(github.event.workflow_run.head_ref, 'refs/tags/v')
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          cd sdk/rust
+          cargo publish --token "$CARGO_REGISTRY_TOKEN" --registry crates-io

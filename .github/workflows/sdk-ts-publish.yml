@@ -1,0 +1,46 @@
+name: SDK TypeScript Publish
+
+on:
+  workflow_run:
+    workflows:
+      - Protocol Publish
+    types:
+      - completed
+
+jobs:
+  ts-sdk:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+      - name: Enable pnpm
+        run: corepack enable pnpm
+      - name: Install dependencies
+        run: |
+          cd sdk/ts
+          pnpm install
+      - name: Type-check
+        run: |
+          cd sdk/ts
+          pnpm exec tsc --project tsconfig.json --noEmit
+      - name: Build SDK
+        run: |
+          cd sdk/ts
+          pnpm run build
+      - name: Publish TypeScript SDK
+        if: startsWith(github.event.workflow_run.head_ref, 'refs/tags/v')
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          PNPM_TOKEN: ${{ secrets.PNPM_TOKEN }}
+        run: |
+          cd sdk/ts
+          if [ -n "$NPM_TOKEN" ]; then
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+          elif [ -n "$PNPM_TOKEN" ]; then
+            echo "//registry.npmjs.org/:_authToken=${PNPM_TOKEN}" > .npmrc
+          fi
+          pnpm publish --access public --no-git-checks

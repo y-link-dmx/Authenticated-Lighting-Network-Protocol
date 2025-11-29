@@ -6,7 +6,7 @@ VERSION=$(cat "$ROOT_DIR/VERSION")
 DIST="$ROOT_DIR/dist/rust"
 
 mkdir -p "$DIST"
-cd "$ROOT_DIR/bindings/rust/alpine-protocol-rs"
+cd "$ROOT_DIR/protocol/rust/alpine-protocol-rs"
 
 echo "==> Building Rust crate (version $VERSION)"
 cargo test

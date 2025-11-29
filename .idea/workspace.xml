@@ -21,29 +21,65 @@
     </configurations>
   </component>
   <component name="CargoProjects">
-    <cargoProject FILE="$PROJECT_DIR$/src/alnp/Cargo.toml">
-      <package file="$PROJECT_DIR$/src/alnp">
+    <cargoProject FILE="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.toml">
+      <package file="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs">
+        <feature name="default" enabled="true" />
+      </package>
+    </cargoProject>
+    <cargoProject FILE="$PROJECT_DIR$/sdk/rust/Cargo.toml">
+      <package file="$PROJECT_DIR$/sdk/rust">
         <feature name="default" enabled="true" />
       </package>
     </cargoProject>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing.">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/bindings-publish.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/sdk-publish.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/sdk-python-publish.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.github/workflows/sdk-ts-publish.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bindings/ts/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/c/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/c/alpine_sdk.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/rust/src/client.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/rust/src/error.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/rust/src/transport/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/rust/src/transport/udp.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/c-release.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/docs-release.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/python-release.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/rust-release.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/ts-release.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VERSION" beforeDir="false" afterPath="$PROJECT_DIR$/VERSION" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/python/src/alnp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/src/alnp/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/python/src/alnp/sdk/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/python/src/alnp/sdk/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/python/src/alnp/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/sdk/client.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/sdk/discovery.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/src/sdk/mod.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/ts/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/ts/src/sdk/client.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/ts/src/sdk/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bindings/ts/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/bindings/ts/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/implementation_audit.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/implementation_audit.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/release_process.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/release_process.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/build_embedded_cpp.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build_embedded_cpp.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/benches/artnet_streaming.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/benches/artnet_streaming.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/benches/common/config.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/benches/common/config.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/profile.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/profile.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/sdk/client.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/sdk/client.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/sdk/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/sdk/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/src/session/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/src/session/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/target/.rustc_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/tests/e2e/streaming_udp_e2e.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/e2e/streaming_udp_e2e.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/alnp/tests/feature_suite.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/alnp/tests/feature_suite.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/sdk/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/rust/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/rust/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/rust/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts/src/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +118,10 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
+                    <option name="branchName" value="v2-architecture" />
+                    <option name="lastUsedInstant" value="1764369328" />
+                  </RecentBranch>
+                  <RecentBranch>
                     <option name="branchName" value="main" />
                     <option name="lastUsedInstant" value="1764095619" />
                   </RecentBranch>
@@ -98,15 +138,15 @@
       </RecentBranches>
     </option>
   </component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/y-link-dmx/Authenticated-Lighting-Protocol.git&quot;,
-    &quot;accountId&quot;: &quot;37f597b7-0b3a-468c-9456-8175f1be8b0d&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/alpine-core/Authenticated-Lighting-Protocol.git",
+    "accountId": "37f597b7-0b3a-468c-9456-8175f1be8b0d"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/alnp/Cargo.toml" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/alnp/docs/benchmarks.md" root0="FORCE_HIGHLIGHTING" root1="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/Cargo.toml" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs/docs/benchmarks.md" root0="FORCE_HIGHLIGHTING" root1="SKIP_INSPECTION" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="ZrWc6rVe" />
@@ -153,7 +193,7 @@
     &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;v2-architecture&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/krist/CLionProjects/Authenticated-Lighting-Network-Protocol&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -182,7 +222,7 @@
     <configuration name="Test basic" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="buildProfileId" value="test" />
       <option name="command" value="test --package alnp --test basic" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$/src/alnp" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs" />
       <envs />
       <option name="emulateTerminal" value="true" />
       <option name="channel" value="DEFAULT" />
@@ -199,7 +239,7 @@
     </configuration>
     <configuration name="Test control_reorder::control_reorder" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test --package alnp --test e2e control_reorder::control_reorder -- --exact" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$/src/alnp" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs" />
       <envs />
       <option name="emulateTerminal" value="true" />
       <option name="channel" value="DEFAULT" />
@@ -216,7 +256,7 @@
     </configuration>
     <configuration name="Test e2e" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="command" value="test --package alpine-protocol-rs --test e2e" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$/src/alnp" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs" />
       <envs />
       <option name="emulateTerminal" value="true" />
       <option name="channel" value="DEFAULT" />
@@ -234,7 +274,7 @@
     <configuration name="Test feature_suite" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="buildProfileId" value="test" />
       <option name="command" value="test --package alpine --test feature_suite" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$/src/alnp" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$/bindings/rust/alpine-protocol-rs" />
       <envs />
       <option name="emulateTerminal" value="true" />
       <option name="channel" value="DEFAULT" />
@@ -289,8 +329,9 @@
       <updated>1763902276726</updated>
       <workItem from="1763902278166" duration="6168000" />
       <workItem from="1763911071569" duration="19211000" />
+      <workItem from="1764428146975" duration="2066000" />
     </task>
-    <task id="LOCAL-00001" summary="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (src/alnp/Cargo.toml, src/alnp/src/lib.rs, src/alnp/src/handshake/{mod.rs,client.rs,server.rs}, src/alnp/src/    &#10;    session/mod.rs, src/alnp/src/crypto/mod.rs, src/alnp/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (src/alnp/src/messages/mod.rs, src/alnp/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, src/alnp/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (src/alnp/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS.">
+    <task id="LOCAL-00001" summary="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (bindings/rust/alpine-protocol-rs/Cargo.toml, bindings/rust/alpine-protocol-rs/src/lib.rs, bindings/rust/alpine-protocol-rs/src/handshake/{mod.rs,client.rs,server.rs}, bindings/rust/alpine-protocol-rs/src/    &#10;    session/mod.rs, bindings/rust/alpine-protocol-rs/src/crypto/mod.rs, bindings/rust/alpine-protocol-rs/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (bindings/rust/alpine-protocol-rs/src/messages/mod.rs, bindings/rust/alpine-protocol-rs/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, bindings/rust/alpine-protocol-rs/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (bindings/rust/alpine-protocol-rs/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS.">
       <option name="closed" value="true" />
       <created>1763903155613</created>
       <option name="number" value="00001" />
@@ -298,7 +339,7 @@
       <option name="project" value="LOCAL" />
       <updated>1763903155613</updated>
     </task>
-    <task id="LOCAL-00002" summary="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (src/alnp/Cargo.toml, src/alnp/src/lib.rs, src/alnp/src/handshake/{mod.rs,client.rs,server.rs}, src/alnp/src/    &#10;    session/mod.rs, src/alnp/src/crypto/mod.rs, src/alnp/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (src/alnp/src/messages/mod.rs, src/alnp/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, src/alnp/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (src/alnp/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS.">
+    <task id="LOCAL-00002" summary="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (bindings/rust/alpine-protocol-rs/Cargo.toml, bindings/rust/alpine-protocol-rs/src/lib.rs, bindings/rust/alpine-protocol-rs/src/handshake/{mod.rs,client.rs,server.rs}, bindings/rust/alpine-protocol-rs/src/    &#10;    session/mod.rs, bindings/rust/alpine-protocol-rs/src/crypto/mod.rs, bindings/rust/alpine-protocol-rs/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (bindings/rust/alpine-protocol-rs/src/messages/mod.rs, bindings/rust/alpine-protocol-rs/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, bindings/rust/alpine-protocol-rs/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (bindings/rust/alpine-protocol-rs/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS.">
       <option name="closed" value="true" />
       <created>1763905214127</created>
       <option name="number" value="00002" />
@@ -329,7 +370,7 @@
       <option name="presentableId" value="LOCAL−00005" />
       <updated>1763911785921</updated>
     </task>
-    <task id="LOCAL−00006" summary="Refactored and expanded documentation, renamed protocol to ALPINE, and finalized v1.0 spec.&#10;&#10;- Rebranded protocol and documentation from ALNP to ALPINE, aligning terminology across all files.&#10;- Removed legacy content (`bindings.md, overview.md, src/alnp/README.md`) and introduced new protocol documents (`discovery.md, handshake.md, architecture.md, streaming.md, control_plane.md, capabilities.md, security.md, errors.md`).&#10;- Updated `README.md` with ALPINE overview and language binding highlights.&#10;- Consolidated ALPINE 1.0 wire protocol details into a rewritten `SPEC.md`.&#10;- Added IntelliJ project settings and quality-of-life updates for `.idea/`.&#10;- Enhanced modularity and clarity across subsystem-focused docs (discovery, handshake, streaming, and control plane).">
+    <task id="LOCAL−00006" summary="Refactored and expanded documentation, renamed protocol to ALPINE, and finalized v1.0 spec.&#10;&#10;- Rebranded protocol and documentation from ALNP to ALPINE, aligning terminology across all files.&#10;- Removed legacy content (`bindings.md, overview.md, bindings/rust/alpine-protocol-rs/README.md`) and introduced new protocol documents (`discovery.md, handshake.md, architecture.md, streaming.md, control_plane.md, capabilities.md, security.md, errors.md`).&#10;- Updated `README.md` with ALPINE overview and language binding highlights.&#10;- Consolidated ALPINE 1.0 wire protocol details into a rewritten `SPEC.md`.&#10;- Added IntelliJ project settings and quality-of-life updates for `.idea/`.&#10;- Enhanced modularity and clarity across subsystem-focused docs (discovery, handshake, streaming, and control plane).">
       <option name="closed" value="true" />
       <created>1764095536684</created>
       <option name="number" value="LOCAL−00006" />
@@ -394,11 +435,11 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (src/alnp/Cargo.toml, src/alnp/src/lib.rs, src/alnp/src/handshake/{mod.rs,client.rs,server.rs}, src/alnp/src/    &#10;    session/mod.rs, src/alnp/src/crypto/mod.rs, src/alnp/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (src/alnp/src/messages/mod.rs, src/alnp/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, src/alnp/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (src/alnp/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS." />
+    <MESSAGE value="Built an ALNP scaffold on top of the existing sACN codebase while leaving the transport untouched, adding an authenticated control-plane, message schema, and Rust reference code plus docs.&#10;                                                                                                                                                                                                                                    &#10;  - Added ALNP Rust crate with handshake/session/crypto/stream scaffolding and public entrypoint alnp::AlnpSession (bindings/rust/alpine-protocol-rs/Cargo.toml, bindings/rust/alpine-protocol-rs/src/lib.rs, bindings/rust/alpine-protocol-rs/src/handshake/{mod.rs,client.rs,server.rs}, bindings/rust/alpine-protocol-rs/src/    &#10;    session/mod.rs, bindings/rust/alpine-protocol-rs/src/crypto/mod.rs, bindings/rust/alpine-protocol-rs/src/stream.rs).                                                                                                                                                            &#10;  - Defined E1.33-inspired handshake messages and proto schema (bindings/rust/alpine-protocol-rs/src/messages/mod.rs, bindings/rust/alpine-protocol-rs/messages/alnp_handshake.proto), including ControllerHello/NodeHello/ChallengeRequest/ChallengeResponse/SessionEstablished.   &#10;  - Documented protocol and project direction (SPEC.md, roadmap.md, bindings/rust/alpine-protocol-rs/README.md), and highlighted ALNP additions in the root README.md.                                                                                      &#10;  - Implemented ALNP-Stream wrapper that gates sACN send/subscribe calls on session authentication (bindings/rust/alpine-protocol-rs/src/stream.rs), with placeholder key exchange/authenticator hooks ready for real crypto/TLS." />
     <MESSAGE value=" Added control-plane signing/verification, refined reliability, and public-facing APIs/bindings scaffolds" />
     <MESSAGE value=" ALNP repo is now cleaned, documented, versioned, and release-ready with multi-language builds and publishing pipelines.&#10;                                                                                                                                                                                    &#10;  - Removed legacy sACN/ETCLabs artifacts (cmake, docs, tools, examples, include/src/sacn, CI) leaving only ALNP v1 content and bindings.                                           &#10;  - Added full docs set (docs/*.md, SPEC.md, refreshed README.md, roadmap.md) covering overview, architecture, handshake/control messages, streaming/jitter, discovery, bindings,   &#10;    and public-facing examples across Rust/TS/Python/C.                                                                                                                             &#10;  - Versioning/release infra: VERSION (1.0.0), CHANGELOG.md, .gitattributes, updated .gitignore, Rust crate 1.0.0 with staticlib output.                                            &#10;  - Build scripts (scripts/build_{rust,ts,python,c}.sh) producing artifacts under dist/ using VERSION metadata.                                                                     &#10;  - Multi-language release workflows under .github/workflows/ for Rust crate, TS package, Python wheel, and C tarball with tests, artifacts, and release notes on tags.             &#10;  - Public bindings packaged: TS package metadata updated, Python stub package (bindings/python), C header README, examples for all languages.                                      &#10;  - Control crypto helpers added, reliable control channel tweaks, and tests updated; cargo test now passes." />
     <MESSAGE value="Added extensive E2E and performance tests for ALNP handshake, control, and streaming.&#10;&#10;- Introduced a comprehensive suite of E2E tests covering control-plane reliability, reordering, retransmission, handshake scenarios (success/replay/signature validation/failures), and streaming.&#10;- Added performance tests for latency, keepalive stability, mixed conditions, streaming load, and universe capacity.&#10;- Enhanced test infrastructure with mock UDP, stream, and custom assertion utilities.&#10;- Updated `.gitignore` and `.idea` for development artifacts." />
-    <MESSAGE value="Refactored and expanded documentation, renamed protocol to ALPINE, and finalized v1.0 spec.&#10;&#10;- Rebranded protocol and documentation from ALNP to ALPINE, aligning terminology across all files.&#10;- Removed legacy content (`bindings.md, overview.md, src/alnp/README.md`) and introduced new protocol documents (`discovery.md, handshake.md, architecture.md, streaming.md, control_plane.md, capabilities.md, security.md, errors.md`).&#10;- Updated `README.md` with ALPINE overview and language binding highlights.&#10;- Consolidated ALPINE 1.0 wire protocol details into a rewritten `SPEC.md`.&#10;- Added IntelliJ project settings and quality-of-life updates for `.idea/`.&#10;- Enhanced modularity and clarity across subsystem-focused docs (discovery, handshake, streaming, and control plane)." />
+    <MESSAGE value="Refactored and expanded documentation, renamed protocol to ALPINE, and finalized v1.0 spec.&#10;&#10;- Rebranded protocol and documentation from ALNP to ALPINE, aligning terminology across all files.&#10;- Removed legacy content (`bindings.md, overview.md, bindings/rust/alpine-protocol-rs/README.md`) and introduced new protocol documents (`discovery.md, handshake.md, architecture.md, streaming.md, control_plane.md, capabilities.md, security.md, errors.md`).&#10;- Updated `README.md` with ALPINE overview and language binding highlights.&#10;- Consolidated ALPINE 1.0 wire protocol details into a rewritten `SPEC.md`.&#10;- Added IntelliJ project settings and quality-of-life updates for `.idea/`.&#10;- Enhanced modularity and clarity across subsystem-focused docs (discovery, handshake, streaming, and control plane)." />
     <MESSAGE value="Removed all test code, utilities, and performance benchmarks related to ALNP." />
     <MESSAGE value="Added ALPINE benchmarks and E2E tests.&#10;&#10;- Introduced `benchmarks.md` outlining methodology and metrics for streaming latency and protocol evaluations.&#10;- Added Criterion-based performance benchmarks for ALPINE, Art-Net, and sACN under `benches/`.&#10;- Implemented E2E UDP tests for streaming layer with `streaming_udp_e2e.rs`.&#10;- Modularized test utilities and shared config under `benches/common/`.&#10;- Updated ALPINE documentation to reflect benchmark results and methodology." />
     <MESSAGE value="Expand roadmap with detailed ALPINE protocol phases" />
@@ -407,5 +448,9 @@
     <MESSAGE value="Refactor GitHub Actions workflow, adjust Python artifact handling, and fix C++ discovery request logic." />
     <MESSAGE value="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing." />
     <option name="LAST_COMMIT_MESSAGE" value="Refactor Python release workflow: rename job, adjust permissions, streamline steps, and use OIDC for PyPI publishing." />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

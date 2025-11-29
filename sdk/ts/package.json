@@ -7,7 +7,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@alpine-core/protocol": "file:../../protocol/ts",
+    "@alpine-core/protocol": "^2.0.12",
     "cbor": "^8.1.0"
   },
   "devDependencies": {

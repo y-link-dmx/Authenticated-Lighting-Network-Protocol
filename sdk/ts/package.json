@@ -1,13 +1,13 @@
 {
   "name": "@alpine-core/sdk",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@alpine-core/protocol": "^2.0.12",
+    "@alpine-core/protocol": "^2.0.15",
     "cbor": "^8.1.0"
   },
   "devDependencies": {

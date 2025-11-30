@@ -24,6 +24,8 @@ mac
 - Exponential backoff is REQUIRED
 - Control envelopes MUST be cryptographically authenticated
 
+> Only the Rust SDK currently runs the complete control channel. TypeScript/Python packages only provide bindings/data shapes; they do not execute the control lifecycle or verify MACs.
+
 ## Acknowledge payloads
 
 - Acknowledgements now optionally carry a CBOR `payload` field that contains structured reply data. Senders must MAC-cover `ok`, `detail`, and `payload`, and receivers should verify the MAC before parsing.

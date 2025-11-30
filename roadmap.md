@@ -77,34 +77,24 @@ Canonical, low-level protocol implementations:
 Bindings contain **only**:
 
 * wire and message types
-* cryptographic primitives
-* profiles and compiled profiles
-* stateless helpers and codecs
+* cryptographic primitives and codecs
+* stream profile validation helpers
 
-Bindings are fully usable **without** any SDK.
+Bindings are fully usable **without** any SDK and are the only supported artifacts in TypeScript and Python at the moment.
 
 ### SDKs (Developer Experience Layer)
 
-A new first-class SDK layer under `sdk/`, separate from bindings.
+`sdk/` now hosts:
 
-SDKs provide:
+* `sdk/rust` — the **only** maintained SDK runtime that orchestrates discovery, session lifecycle, control, and streaming.
+* `sdk/ts-archived` and `sdk/python-archived` remain only for reference; no active SDK releases exist for those languages in this phase.
+* Other SDK bindings (C/C++) continue as thin wrappers for their respective platforms.
 
-* connection/session lifecycle
-* discovery orchestration
-* streaming helpers
-* safe defaults, retries, and ergonomics
-
-Official SDKs:
-
-* Rust (`alpine-protocol-sdk`)
-* TypeScript (`@alpine-core/sdk`)
-* Python (`alpine-sdk`)
-
-SDKs depend **only** on the public APIs of the bindings.
+The `alpine-protocol-sdk` depends **only** on the public APIs of the bindings.
 
 **Outcome:**
-Protocol stability and developer experience evolve independently.
-This split is the reason for the **v2.0 version bump**.
+
+Protocol stability and the Rust SDK evolve together while TypeScript and Python remain bindings-only until we are ready to reintroduce full runtimes.
 
 ---
 

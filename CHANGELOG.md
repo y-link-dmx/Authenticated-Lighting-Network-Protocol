@@ -15,10 +15,14 @@ All notable changes to ALPINE will be documented in this file.
 - Introduce Phase 3.3.1's pure adaptation core (deterministic state + decision engine) scoped to keyframe cadence, delta depth, and deadlines without integrating yet.
 - Begin Phase 3.3.2 by wiring the adaptation state into the streaming path: network + recovery update `AdaptationState`, and every frame carries `alpine_adaptation` metadata plus a keyframe flag.
 
+## [2.0.20] - 2025-12-02
+- Finalize the Rust-only runtime: publish `alpine-protocol-rs 2.0.20` and `alpine-protocol-sdk 0.1.9`, making the control helpers (`ping`, `status`, `health`, `identity`, `metadata`) and `ack.payload` semantics available only in Rust.
+- Bindings-only artifacts (`protocol/ts`, `protocol/python`) follow as supporting packages; archived TS/Python SDK runtimes remain for reference.
 ## [2.0.19] - 2025-12-01
 - Extend `Acknowledge` with an optional CBOR `payload` that stays protected by the MAC and provide helpers for decoding typed replies.
 - Add typed control helpers (`ping`, `status`, `health`, `identity`, `metadata`) to `AlpineClient` so Rust consumers can access structured responses without touching UDP/JSON.
-- Ship the SDK packages (`sdk/rust` @ 0.1.8, `sdk/ts` @ 0.1.8, `sdk/python` @ 0.1.8) and the protocol helpers (`2.0.19`) so every artifact depends on the freshly tagged control payload semantics.
+- Ship the Rust SDK package (`sdk/rust` @ 0.1.8) and the protocol helpers (`2.0.19`) so every artifact depends on the freshly tagged control payload semantics.
+- Archived the TypeScript and Python SDK runtimes (`sdk/ts`, `sdk/python`) so Rust is the only fully supported runtime; the other languages now only provide bindings/data shapes.
 
 ## [2.0.18] - 2025-11-30
 - Bump the protocol artifacts (`alpine-protocol-rs`, `@alpine-core/protocol`, `alnp`) to `2.0.18` and document the SDK release workflow so they can be published reliably.

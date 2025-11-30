@@ -20,7 +20,8 @@ ALPINE is a **modern, secure, vendor-agnostic lighting control protocol** built 
 ### sdk
 
 - **Rust**: `sdk/rust/alpine-protocol-sdk` defines `DiscoveryClient` and `AlpineClient`, orchestrates discovery/handshake/stream, and keeps profiles immutable once bound. It depends on the published `alpine-protocol-rs` for all primitives.
-- **TypeScript/Python**: (coming soon) will follow the same pattern: lightweight scaffolds that consume the published protocol layer and expose discovery/handshake helpers without touching internal state.
+
+> **Rust is the only maintained runtime right now**. The TypeScript and Python directories are bindings-only (message types, CBOR helpers) without runtime behavior, and any older SDK helpers are archived.
 
 ## Discovery → Session workflow (recommended)
 
@@ -59,6 +60,7 @@ Set the usual tokens so publishing works: `CARGO_REGISTRY_TOKEN`, `NPM_TOKEN`, `
 - [`docs/documentation_policy.md`](docs/documentation_policy.md)
 - [`docs/discovery.md`](docs/discovery.md)
 - [`SPEC.md`](SPEC.md)
+- [`docs/status.md`](docs/status.md)
 
 ## Continuous Integration
 

@@ -33,30 +33,38 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="chore: update Alpine imports and dependency versions across SDKs and bindings">
+    <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="chore: update protocol core, SDKs, and bindings for version 2.0.19 release">
+      <change afterPath="$PROJECT_DIR$/docs/status.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/protocol/ts/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/python-archived/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sdk/ts-archived/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VERSION" beforeDir="false" afterPath="$PROJECT_DIR$/VERSION" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/control_plane.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/control_plane.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/implementation_audit.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/implementation_audit.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/reference_impl.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/reference_impl.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/release_process.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/release_process.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/python/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/src/control.rs" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/src/control.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/src/messages/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/src/messages/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/tests/e2e/control_udp_e2e.rs" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/tests/e2e/control_udp_e2e.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/tests/feature_suite.rs" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/rust/alpine-protocol-rs/tests/feature_suite.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/ts/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/ts/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/ts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/protocol/python/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/python/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sdk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/rust/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/rust/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/rust/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/rust/src/client.rs" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/rust/src/client.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/discovery.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/discovery.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/errors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/transport/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/transport/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/transport/udp.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/transport/udp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/src/client/AlpineClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/client/AlpineClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/src/client/DiscoveryClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/client/DiscoveryClient.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/src/errors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/errors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/src/transport/udp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/transport/udp.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sdk/ts/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -461,7 +469,14 @@
       <option name="presentableId" value="LOCAL−00022" />
       <updated>1764501459619</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL−00023" summary="chore: update protocol core, SDKs, and bindings for version 2.0.19 release">
+      <option name="closed" value="true" />
+      <created>1764513414647</created>
+      <option name="number" value="LOCAL−00023" />
+      <option name="presentableId" value="LOCAL−00023" />
+      <updated>1764513414647</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -508,7 +523,8 @@
     <MESSAGE value="chore(ci): add manual trigger and refine conditions for Python SDK publishing" />
     <MESSAGE value="chore(deps): fix crate name typo in Rust SDK dependency" />
     <MESSAGE value="chore: update Alpine imports and dependency versions across SDKs and bindings" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: update Alpine imports and dependency versions across SDKs and bindings" />
+    <MESSAGE value="chore: update protocol core, SDKs, and bindings for version 2.0.19 release" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: update protocol core, SDKs, and bindings for version 2.0.19 release" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

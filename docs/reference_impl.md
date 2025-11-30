@@ -1,15 +1,12 @@
 # ALPINE Reference Implementation Guide
 
-This document describes how to implement ALPINE 1.0 in:
+This document describes how we expose ALPINE 1.0 implementations:
 
-- Rust (canonical implementation)
-- TypeScript
-- Python
-- C (static library)
-- C++ helper header + `ALPINE_EMBEDDED` profile
-- Stream Profiles in Rust (profiles are the canonical behavior knobs)
-- Language-specific SDK helpers (Rust `sdk`, TypeScript `sdk`, Python `sdk`, C++ `sdk`)
-- C++ (helper header wrapping the C helpers)
+- **Rust (canonical implementation)** — the only full protocol + SDK runtime.
+- **TypeScript / Python** — bindings-only packages that expose message types, enums, and serialization helpers without running sessions or control channels.
+- **C (static library)** and **C++ helper header** with `ALPINE_EMBEDDED`.
+- **Stream Profiles in Rust** (profiles are the canonical behavior knobs).
+- **Language-specific SDK helpers** currently exist only for Rust (`sdk/rust`). Other SDK directories are archived and not maintained.
 
 A correct implementation MUST:
 

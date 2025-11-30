@@ -11,15 +11,15 @@ Each release cycle follows this checklist:
    - Run `cargo test --manifest-path protocol/rust/alpine-protocol-rs/Cargo.toml`.
    - Run `scripts/build_c.sh` (packages `libalpine.a`, `protocol/c`, and C++ headers).
    - Run `scripts/build_embedded_cpp.sh` to validate the `ALPINE_EMBEDDED` flags.
-   - Run `scripts/build_ts.sh` and `scripts/build_python.sh` to produce the publishable bundles for the TypeScript and Python protocol helpers.
+   - Run `scripts/build_ts.sh` and `scripts/build_python.sh` to produce the binding-only bundles (`@alpine-core/protocol`, `alnp`).
 
 2. **Tag the protocol release**
-   - Create a tag such as `v2.0.19` and push it to trigger `protocol-publish`.
+   - Create a tag such as `v2.0.20` and push it to trigger `protocol-publish`.
    - The workflow tests, packages, and publishes every protocol artifact to crates.io, npm, PyPI, and GitHub Packages.
 
 3. **Publish the SDK**
-   - Once `protocol-publish` succeeds for the tag, `sdk-publish` is triggered automatically using the same git tag so publishing remains atomic.
-   - The SDK workflow builds/tests the SDK crate (`sdk/rust`), confirms it compiles against the released protocol artifacts, and then publishes it according to the version in `sdk/rust/Cargo.toml` (e.g., `0.1.8` today).
+   - Once `protocol-publish` succeeds for the tag, `sdk-publish` runs for the Rust SDK only (currently `sdk/rust/alpine-protocol-sdk`).
+   - TypeScript and Python SDK runtimes are archived; only Rust SDK artifacts are published in this phase.
 
 Tokens to set:
 

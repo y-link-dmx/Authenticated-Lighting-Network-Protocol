@@ -1,6 +1,6 @@
 use std::net::{SocketAddr, UdpSocket as StdUdpSocket};
 
-use alpine_protocol_rs::stream::FrameTransport;
+use alpine::stream::FrameTransport;
 
 /// UDP-based transport used by the SDK streaming client.
 #[derive(Debug)]
@@ -13,7 +13,10 @@ impl UdpFrameTransport {
     pub fn new(local: SocketAddr, peer: SocketAddr) -> Result<Self, std::io::Error> {
         let socket = StdUdpSocket::bind(local)?;
         socket.connect(peer)?;
-        Ok(Self { socket, _peer: peer })
+        Ok(Self {
+            socket,
+            _peer: peer,
+        })
     }
 }
 

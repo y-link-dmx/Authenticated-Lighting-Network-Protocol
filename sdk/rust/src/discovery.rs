@@ -1,11 +1,10 @@
 use std::{
-    fmt,
-    io,
+    fmt, io,
     net::{SocketAddr, UdpSocket},
     time::Duration,
 };
 
-use alpine_protocol_rs::messages::{DiscoveryReply, DiscoveryRequest};
+use alpine::messages::{DiscoveryReply, DiscoveryRequest};
 use rand::{rngs::OsRng, RngCore};
 use serde_cbor;
 

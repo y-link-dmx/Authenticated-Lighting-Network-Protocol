@@ -1,4 +1,4 @@
-use alpine_protocol_rs::stream::FrameTransport;
+use alpine::stream::FrameTransport;
 
 /// Placeholder QUIC transport for future SDK work.
 #[derive(Debug)]

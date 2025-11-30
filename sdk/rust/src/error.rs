@@ -1,7 +1,7 @@
 use std::fmt;
 
-use alpine_protocol_rs::handshake::HandshakeError;
-use alpine_protocol_rs::stream::StreamError;
+use alpine::handshake::HandshakeError;
+use alpine::stream::StreamError;
 
 /// Errors emitted by the SDK client.
 #[derive(Debug)]

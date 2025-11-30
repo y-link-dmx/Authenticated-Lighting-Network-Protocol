@@ -1,209 +1,190 @@
-# ALPINE — Authenticated Lighting Protocol
+# ALPINE Roadmap
 
-[![Rust](https://img.shields.io/badge/Rust-crates.io-000000?style=for-the-badge\&logo=rust\&logoColor=white)](https://crates.io/crates/alpine-protocol-rs)
-[![TypeScript](https://img.shields.io/badge/TypeScript-npm-CB3837?style=for-the-badge\&logo=npm\&logoColor=white)](https://www.npmjs.com/package/@alpine-core/protocol)
-[![Python](https://img.shields.io/badge/Python-PyPI-3776AB?style=for-the-badge\&logo=python\&logoColor=white)](https://pypi.org/project/alnp/)
-[![License](https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge)](LICENSE)
+*Authenticated Lighting Protocol (for Intelligent Networks and Environments)*
 
----
-
-ALPINE is a **modern, secure, vendor-agnostic lighting control protocol** designed to replace legacy systems such as **sACN / E1.31, RDMnet, and proprietary device APIs**.
-
-It is built for **real-time correctness**, **cryptographic identity**, and **predictable behavior under network stress**.
+This roadmap describes the evolution of the **ALPINE protocol**, its **bindings**, and its **official SDKs & tooling**, with a strict separation between protocol truth and developer experience layers.
 
 ---
 
-## What ALPINE provides
+## Phase 1 – Core Protocol Foundations (v1.0, completed)
 
-* **Discovery** — authenticated device identification without knowing IPs
-* **Handshake** — mutual authentication and session key agreement
-* **Control plane** — reliable, signed control envelopes
-* **Streaming layer** — low-latency real-time lighting frames
-* **Capabilities** — devices explicitly declare supported features
-* **Extensibility** — vendor namespaces and structured envelopes
-* **No universes, no DMX limits** — modern frame-based model
+**Status:** ✅ Complete
 
----
+**Goal:** Deliver a rock-solid, vendor-agnostic protocol baseline that works on Ethernet and Wi-Fi without special configuration.
 
-## Core design
+* Finalized v1 wire formats for discovery, handshake, control, and real-time streaming.
+* Defined deterministic session state machines and failure semantics.
+* Documented packet loss, jitter handling, late-frame behavior, and recovery guarantees.
+* Established cryptographic identity, signing, and verification primitives.
 
-ALPINE is built around:
-
-* **CBOR** for compact, structured messages
-* **Ed25519** signatures for identity & integrity
-* **X25519** for session key exchange
-* **UDP broadcast** discovery
-* **UDP or QUIC** for streaming
-* **Deterministic session state machines**
-
-**Design guarantee:**
-
-> Under packet loss, jitter, or delay, ALPINE degrades visual quality — **never temporal correctness**.
+**Outcome:**
+ALPINE v1 is stable, predictable, and suitable for real deployments.
 
 ---
 
-## Architecture overview
+## Phase 2 – Stream Profiles & Selectable Behavior (v1.2, completed)
 
-ALPINE is intentionally split into **three layers**:
+**Status:** ✅ Complete (v1.2.x, frozen)
 
-#### 1. Protocol layer (canonical, low-level)
+**Goal:** Allow operators to select predictable runtime behavior without unsafe tuning.
 
-**Vendor-agnostic protocol truth.**
+* Introduced stream profiles (`Auto`, `Realtime`, etc.) as validated, immutable objects.
+* Bound profile identity to sessions to prevent runtime mutation.
+* Defined deterministic fallback rules when conflicting constraints are detected.
+* Locked Phase 2 behavior with tests, documentation, and regression guarantees.
 
-Protocol artifacts expose:
+**Outcome:**
+Users can choose latency vs resilience trade-offs safely. Phase 2 behavior is frozen.
 
-* wire/message definitions
+---
+
+## Phase 3 – Adaptive Streaming & Network Resilience (v1.3 / v2.x, in progress – not released)
+
+**Status:** 🚧 In progress (no public release yet)
+
+**Goal:** Keep ALPINE visually stable under real-world network conditions.
+
+* Detect packet loss, jitter, late frames, and gaps in real time.
+* Adjust keyframe cadence, deltas, and deadlines deterministically.
+* Trigger forced recovery frames when required.
+* Expose observability and metrics explaining *why* behavior changed.
+
+**Notes:**
+
+* Phase 3 development started before the v2 architectural split.
+* No Phase 3 behavior is released or guaranteed yet.
+* Final Phase 3 features may land either as v1.3 (bindings-only) or v2.x, depending on coupling with SDK ergonomics.
+
+**Outcome (when released):**
+ALPINE degrades visual quality when needed — **never temporal correctness**.
+
+---
+
+## Phase 4 – Architectural Split: Bindings vs SDK (v2.0, completed)
+
+**Status:** ✅ Complete
+
+**Goal:** Enforce a clean, long-term separation between protocol truth and developer ergonomics.
+
+### Bindings (Protocol Surface)
+
+Canonical, low-level protocol implementations:
+
+* Rust (`alpine-protocol-rs`)
+* TypeScript bindings
+* Python bindings
+
+Bindings contain **only**:
+
+* wire and message types
 * cryptographic primitives
-* stream profiles and compiled configs
+* profiles and compiled profiles
 * stateless helpers and codecs
 
-The protocol layer **does not**:
+Bindings are fully usable **without** any SDK.
 
-* open sockets
-* manage sessions
-* expose clients
-* perform retries or lifecycles
+### SDKs (Developer Experience Layer)
 
-Packages:
-
-* **Rust**: `alpine-protocol-rs`
-* **TypeScript**: `@alpine-core/protocol`
-* **Python**: `alnp`
-* **C / C++**: static library + headers (embedded-friendly)
-
-Use the protocol layer when you need:
-
-* embedded targets (ESP32, MCU, C-only)
-* heap-free or allocation-controlled runtimes
-* full control over transport and scheduling
-
----
-
-### 2. SDKs (recommended for applications)
-
-**High-level, ergonomic clients built on top of the protocol layer.**
+A new first-class SDK layer under `sdk/`, separate from bindings.
 
 SDKs provide:
 
+* connection/session lifecycle
 * discovery orchestration
-* connection lifecycle
 * streaming helpers
-* retries, defaults, and intent-driven APIs
+* safe defaults, retries, and ergonomics
 
 Official SDKs:
 
-* **Rust**: `alpine-protocol-sdk`
-* **TypeScript**: `@alpine-core/sdk`
-* **Python**: `alpine-sdk`
+* Rust (`alpine-protocol-sdk`)
+* TypeScript (`@alpine-core/sdk`)
+* Python (`alpine-sdk`)
 
-SDKs depend **only on the public protocol API** and can evolve independently of the protocol layer.
+SDKs depend **only** on the public APIs of the bindings.
 
-For most applications, **start with the SDK**.
-
----
-
-### 3. Tooling (CLI)
-
-**Authoritative inspection & debugging tools.**
-
-An official **ALPINE CLI** (planned) provides:
-
-* device discovery & inspection
-* handshake validation
-* capability inspection
-* protocol diagnostics
-* conformance & test tooling
-
-The CLI is built on the SDKs with optional raw protocol access.
+**Outcome:**
+Protocol stability and developer experience evolve independently.
+This split is the reason for the **v2.0 version bump**.
 
 ---
 
-## Phase 0 — Modular architecture split (target v2.0)
-**Status:** In progress
+## Phase 5 – Tooling & CLI (v2.x)
 
-**Goal:** Treat the protocol layer and SDKs as separate release artifacts while preserving the Phase 2 guarantees.
+**Status:** Planned
 
-- Move `alpine-protocol-rs` to `protocol/rust/alpine-protocol-rs` and keep its API focused on wire helpers, cryptographic primitives, and profiles.
-- Build the SDKs inside `sdk/` so they depend only on the published protocol public API and orchestrate explicit discovery → connect → stream workflows.
-- Introduce `protocol-publish.yml` and `sdk-publish.yml` so the protocol layer releases first and the SDK runs against the freshly published artifacts.
-- Version the protocol artifacts as v2.x.x while letting SDK packages (such as `alpine-protocol-sdk`) follow their own semantic versions.
+**Goal:** Provide authoritative tooling for developers, operators, and vendors.
 
-Phase 0 is the milestone that lets us treat SDKs as optional helpers while keeping the protocol layer stable for embedded targets and constrained runtimes.
+* Introduce an official **ALPINE CLI**:
 
----
+    * `alpine discover`
+    * `alpine inspect`
+    * `alpine handshake`
+    * `alpine capabilities`
+    * `alpine validate`
+    * optional raw / diagnostic modes
+* CLI built on top of SDKs (with optional raw protocol access).
+* Used for:
 
-## Quick start (SDK-first)
+    * debugging
+    * protocol validation
+    * conformance testing
+    * internal dogfooding
 
-Typical workflow:
-
-1. Discover devices on the network
-2. Inspect identity & capabilities
-3. Explicitly choose a target
-4. Connect with a declared stream profile
-5. Start streaming frames
-
-Discovery and connection are **always explicit** — the SDK never auto-connects or caches silently.
-
-This makes failures explainable and behavior predictable.
+**Outcome:**
+ALPINE becomes inspectable, debuggable, and trustworthy — not a black box.
 
 ---
 
-## Stream profiles
+## Phase 6 – Custom Profiles & Intent-Level Configuration (v2.x)
 
-Streaming behavior is selected explicitly using `StreamProfile`:
+**Status:** Planned
 
-* `Auto` — safe default
-* `Realtime` — minimum latency
-* `Install` — resilience-focused
+**Goal:** Let advanced users express preferences without touching low-level flags.
 
-Profiles are:
+* Define intent-level profile goals (latency, smoothness, resilience).
+* Compile validated preferences into concrete stream profiles.
+* Reject unsafe or contradictory configurations *before* they hit the wire.
+* Enable portable, shareable profiles across teams and venues.
 
-* declarative
-* validated
-* compiled into immutable `config_id`s
-* bound to the session (never swapped silently)
-
-Invalid combinations are rejected **before** hitting the wire.
+**Outcome:**
+Power users gain expressiveness without compromising determinism.
 
 ---
 
-## Documentation
+## Phase 7 – Security & Trust Hardening (v2.x+)
 
-ALPINE treats documentation as part of the API contract.
+**Status:** Planned
 
-Protocol and architecture:
+**Goal:** Strengthen trust without gimmicks or unnecessary complexity.
 
-* `SPEC.md`
-* `docs/architecture.md`
-* `docs/discovery.md`
-* `docs/handshake.md`
-* `docs/control_plane.md`
-* `docs/streaming.md`
-* `docs/security.md`
-* `docs/errors.md`
+* Certificate-backed device identities.
+* Replay protection across restarts.
+* Optional encrypted payloads for high-security environments.
+* Conservative defaults with explicit guarantees.
 
-Guarantees, edge-cases, and failure modes are documented explicitly — especially under loss, jitter, and load.
+**Outcome:**
+Security is native, understandable, and auditable.
 
 ---
 
-## CI & correctness
+## Phase 8 – Ecosystem Growth & Compatibility (future)
 
-Protocol-level E2E tests run real UDP discovery, handshake, control, and streaming paths on Linux.
+**Status:** Planned
 
-Bindings, SDKs, and embedded builds are validated independently so correctness does not depend on tooling.
+**Goal:** Enable safe, long-term ecosystem growth.
 
----
+* Capability negotiation and vendor extension ranges.
+* Strict backward compatibility guarantees.
+* Clean upgrade paths for hardware and software.
+* Optional bridges to legacy ecosystems (e.g. sACN / Art-Net).
 
-## Versioning & stability
-
-* **Bindings** evolve conservatively and prioritize stability.
-* **SDKs** evolve faster and focus on ergonomics.
-* Protocol behavior is versioned and regression-tested.
-
-Major architectural changes (such as the SDK/protocol layer split) are treated as **v2-class releases**.
+**Outcome:**
+ALPINE becomes a stable foundation others can confidently build on.
 
 ---
 
-## License
+## Design Commitment
 
-Apache-2.0
+> **Under packet loss, jitter, or delay, ALPINE degrades visual quality — never temporal correctness.**
+
+This principle governs the protocol, the bindings, the SDKs, and all tooling.

@@ -1,6 +1,6 @@
 [package]
 name = "alpine-protocol-sdk"
-version = "0.1.10"
+version = "0.1.11"
 edition = "2021"
 description = "High-level SDK on top of the ALPINE protocol layer."
 authors = ["alpine-core"]

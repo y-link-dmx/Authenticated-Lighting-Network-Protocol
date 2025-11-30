@@ -7,13 +7,18 @@ use alpine::control::{ControlClient, ControlCrypto};
 use alpine::crypto::identity::NodeCredentials;
 use alpine::crypto::X25519KeyExchange;
 use alpine::handshake::keepalive;
-use alpine::handshake::transport::{CborUdpTransport, TimeoutTransport};
-use alpine::handshake::{HandshakeContext, HandshakeError};
-use alpine::messages::{CapabilitySet, ChannelFormat, ControlEnvelope, ControlOp, DeviceIdentity};
+use alpine::handshake::transport::{CborUdpTransport, ReliableControlChannel, TimeoutTransport};
+use alpine::handshake::{HandshakeContext, HandshakeError, HandshakeMessage, HandshakeTransport};
+use alpine::messages::{
+    Acknowledge, CapabilitySet, ChannelFormat, ControlEnvelope, ControlOp, DeviceIdentity,
+};
 use alpine::profile::StreamProfile;
 use alpine::session::{AlnpSession, Ed25519Authenticator};
 use alpine::stream::AlnpStream;
-use serde_json::Value;
+use async_trait::async_trait;
+use serde::de::DeserializeOwned;
+use serde::Deserialize;
+use serde_json::{json, Value};
 use tokio::sync::Mutex;
 use tokio::task::JoinHandle;
 use uuid::Uuid;
@@ -31,6 +36,64 @@ pub struct AlpineClient {
     stream: Option<AlnpStream<UdpFrameTransport>>,
     control: ControlClient,
     keepalive_handle: Option<JoinHandle<()>>,
+}
+
+/// Typed control response returned by `AlpineClient` helpers.
+#[derive(Debug)]
+pub struct ControlReply<T> {
+    pub ack: Acknowledge,
+    pub payload: Option<T>,
+}
+
+impl<T> ControlReply<T> {
+    pub fn ok(&self) -> bool {
+        self.ack.ok
+    }
+
+    pub fn detail(&self) -> Option<&str> {
+        self.ack.detail.as_deref()
+    }
+}
+
+/// Ping reply payload (may be partial depending on device support).
+#[derive(Debug, Deserialize)]
+pub struct PingReply {
+    #[serde(default)]
+    pub timestamp_ms: Option<u64>,
+    #[serde(default)]
+    pub message: Option<String>,
+}
+
+/// Status reply payload returned by the `status` helper.
+#[derive(Debug, Deserialize)]
+pub struct StatusReply {
+    #[serde(default)]
+    pub healthy: Option<bool>,
+    #[serde(default)]
+    pub detail: Option<String>,
+    #[serde(default)]
+    pub uptime_secs: Option<u64>,
+}
+
+/// Health reply payload, including optional metrics metadata.
+#[derive(Debug, Deserialize)]
+pub struct HealthReply {
+    #[serde(default)]
+    pub healthy: Option<bool>,
+    #[serde(default)]
+    pub detail: Option<String>,
+    #[serde(default)]
+    pub metrics: Option<HashMap<String, Value>>,
+}
+
+/// Alias for the fetched device identity.
+pub type IdentityReply = DeviceIdentity;
+
+/// Metadata reply payload is an arbitrary map of CBOR values.
+#[derive(Debug, Deserialize)]
+pub struct MetadataReply {
+    #[serde(default)]
+    pub metadata: HashMap<String, Value>,
 }
 
 impl AlpineClient {
@@ -142,5 +205,84 @@ impl AlpineClient {
         payload: Value,
     ) -> Result<ControlEnvelope, HandshakeError> {
         self.control.envelope(seq, op, payload)
+    }
+
+    /// Sends a ping command and returns the parsed reply (CBOR payload optional).
+    pub async fn ping(&self) -> Result<ControlReply<PingReply>, AlpineSdkError> {
+        self.control_command("ping").await
+    }
+
+    /// Returns the status payload the node publishes for callers.
+    pub async fn status(&self) -> Result<ControlReply<StatusReply>, AlpineSdkError> {
+        self.control_command("status").await
+    }
+
+    /// Reads the health payload, including optional metrics.
+    pub async fn health(&self) -> Result<ControlReply<HealthReply>, AlpineSdkError> {
+        self.control_command("health").await
+    }
+
+    /// Requests the device identity through the control channel.
+    pub async fn identity(&self) -> Result<ControlReply<IdentityReply>, AlpineSdkError> {
+        self.control_command("identity").await
+    }
+
+    /// Fetches metadata that the device publishes in CBOR.
+    pub async fn metadata(&self) -> Result<ControlReply<MetadataReply>, AlpineSdkError> {
+        self.control_command("metadata").await
+    }
+
+    async fn control_command<T>(&self, command: &str) -> Result<ControlReply<T>, AlpineSdkError>
+    where
+        T: DeserializeOwned,
+    {
+        let payload = json!({ "command": command });
+        self.control_request(ControlOp::Vendor, payload).await
+    }
+
+    async fn control_request<T>(
+        &self,
+        op: ControlOp,
+        payload: Value,
+    ) -> Result<ControlReply<T>, AlpineSdkError>
+    where
+        T: DeserializeOwned,
+    {
+        let transport = SharedTransport::new(self._transport.clone());
+        let mut channel = ReliableControlChannel::new(transport);
+        let ack = self.control.send(&mut channel, op, payload).await?;
+        let parsed = ControlCrypto::decode_ack_payload::<T>(ack.payload.as_deref())
+            .map_err(AlpineSdkError::from)?;
+        Ok(ControlReply {
+            ack,
+            payload: parsed,
+        })
+    }
+}
+
+#[derive(Clone)]
+struct SharedTransport<T> {
+    inner: Arc<Mutex<T>>,
+}
+
+impl<T> SharedTransport<T> {
+    fn new(inner: Arc<Mutex<T>>) -> Self {
+        Self { inner }
+    }
+}
+
+#[async_trait]
+impl<T> HandshakeTransport for SharedTransport<T>
+where
+    T: HandshakeTransport + Send,
+{
+    async fn send(&mut self, msg: HandshakeMessage) -> Result<(), HandshakeError> {
+        let mut guard = self.inner.lock().await;
+        guard.send(msg).await
+    }
+
+    async fn recv(&mut self) -> Result<HandshakeMessage, HandshakeError> {
+        let mut guard = self.inner.lock().await;
+        guard.recv().await
     }
 }

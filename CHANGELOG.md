@@ -15,6 +15,11 @@ All notable changes to ALPINE will be documented in this file.
 - Introduce Phase 3.3.1's pure adaptation core (deterministic state + decision engine) scoped to keyframe cadence, delta depth, and deadlines without integrating yet.
 - Begin Phase 3.3.2 by wiring the adaptation state into the streaming path: network + recovery update `AdaptationState`, and every frame carries `alpine_adaptation` metadata plus a keyframe flag.
 
+## [2.0.19] - 2025-12-01
+- Extend `Acknowledge` with an optional CBOR `payload` that stays protected by the MAC and provide helpers for decoding typed replies.
+- Add typed control helpers (`ping`, `status`, `health`, `identity`, `metadata`) to `AlpineClient` so Rust consumers can access structured responses without touching UDP/JSON.
+- Ship the SDK packages (`sdk/rust` @ 0.1.8, `sdk/ts` @ 0.1.8, `sdk/python` @ 0.1.8) and the protocol helpers (`2.0.19`) so every artifact depends on the freshly tagged control payload semantics.
+
 ## [2.0.18] - 2025-11-30
 - Bump the protocol artifacts (`alpine-protocol-rs`, `@alpine-core/protocol`, `alnp`) to `2.0.18` and document the SDK release workflow so they can be published reliably.
 - Publish the SDK packages (`sdk/rust`, `sdk/ts`, `sdk/python`) at `0.1.7`, ensuring they depend on the freshly tagged protocol release and that the release docs reference the new tag-and-dependency versions.
@@ -24,7 +29,7 @@ All notable changes to ALPINE will be documented in this file.
 
 ## [1.2.3] - 2025-11-29
 - Add `sdk::DiscoveryClient` so discovery is stateless, explicit, and surfaces identity/address/capabilities along with a signed flag.
-- Clarify the README workflow (DiscoveryClient -> AlpineClient::connect -> start_stream -> send_frame) and highlight the new pre-session guarantee.
+- Clarify the README workflow (DiscoveryClient → AlpineClient::connect → start_stream → send_frame) and highlight the new pre-session guarantee.
 - Improve `ClientError` diagnostics so discovery/handshake failures preserve their concrete causes.
 
 ## [1.2.2] - 2025-11-28

@@ -24,6 +24,11 @@ mac
 - Exponential backoff is REQUIRED
 - Control envelopes MUST be cryptographically authenticated
 
+## Acknowledge payloads
+
+- Acknowledgements now optionally carry a CBOR `payload` field that contains structured reply data. Senders must MAC-cover `ok`, `detail`, and `payload`, and receivers should verify the MAC before parsing.
+ - The SDK layer exposes typed helpers (`ping`, `status`, `health`, `identity`, `metadata`) that read from this payload to avoid JSON/UDP plumbing.
+
 ## Standard Operations
 
 - get_info

@@ -24,6 +24,9 @@ protocol helpers.
    returned `config_id`.
 4. Use `send_frame` to push encoded `FrameEnvelope`s or `send_control` for
    control envelopes.
+5. Call `AlpineClient::ping`, `status`, `health`, `identity`, or `metadata` to
+   send the corresponding control command and receive typed replies when the
+   device returns structured CBOR payloads.
 
 ## Example
 

@@ -12,8 +12,18 @@ use uuid::Uuid;
 use alpine::e2e_common::run_udp_handshake;
 
 fn verify_ack(ack: &Acknowledge, crypto: &ControlCrypto) -> Result<(), HandshakeError> {
-    let payload = json!({"ok": ack.ok, "detail": ack.detail});
-    crypto.verify_mac(ack.seq, &ack.session_id, &payload, &ack.mac)
+    let expected_mac = crypto.mac_for_ack(
+        ack.seq,
+        &ack.session_id,
+        ack.ok,
+        ack.detail.as_deref(),
+        ack.payload.as_deref(),
+    )?;
+    if expected_mac == ack.mac {
+        Ok(())
+    } else {
+        Err(HandshakeError::Authentication("ack mac mismatch".into()))
+    }
 }
 
 #[tokio::test]
@@ -44,7 +54,7 @@ async fn control_udp_e2e_phase2() -> Result<(), Box<dyn Error>> {
         let (len, src) = node_socket.recv_from(&mut buf).await?;
         let envelope: ControlEnvelope = serde_cbor::from_slice(&buf[..len])?;
         responder.verify(&envelope)?;
-        let ack = responder.ack(envelope.seq, true, Some("ok".into()))?;
+        let ack = responder.ack(envelope.seq, true, Some("ok".into()), None)?;
         let ack_bytes = serde_cbor::to_vec(&ack)?;
         node_socket.send_to(&ack_bytes, src).await?;
         Ok::<_, Box<dyn Error + Send + Sync>>(())

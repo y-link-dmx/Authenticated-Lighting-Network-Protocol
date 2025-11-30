@@ -8,3 +8,5 @@ Current SDKs:
 - `sdk/ts` — `@alpine-core/sdk` mirrors the Rust lifecycle in TypeScript with UDP transports and lifecycle helpers.
 - `sdk/python` — `alpine-sdk` mirrors the same behavior and exposes `DiscoveryClient` + `AlpineClient`.
 - `sdk/c` & `sdk/cpp` — thin wrappers to orchestrate sockets and profile IDs on top of the C protocol helpers (`protocol/c/alnp.h`).
+
+> Control-plane convenience helpers (ping, status, health, identity, metadata) live only in the Rust SDK for now while the JS/TS and Python SDKs focus on discovery and streaming until the control channel helpers reach those runtimes.

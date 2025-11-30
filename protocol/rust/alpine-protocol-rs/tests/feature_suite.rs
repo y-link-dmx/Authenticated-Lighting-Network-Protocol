@@ -162,12 +162,17 @@ async fn control_mac_roundtrip() {
         .unwrap();
     responder.verify(&envelope).unwrap();
     let ack = responder
-        .ack(envelope.seq, true, Some("ok".into()))
+        .ack(envelope.seq, true, Some("ok".into()), None)
         .unwrap();
-    let ack_payload = json!({"ok": true, "detail": "ok"});
     let expected_mac = responder
         .crypto
-        .mac_for_payload(ack.seq, &session_id, &ack_payload)
+        .mac_for_ack(
+            ack.seq,
+            &session_id,
+            ack.ok,
+            ack.detail.as_deref(),
+            ack.payload.as_deref(),
+        )
         .unwrap();
     assert_eq!(expected_mac, ack.mac);
 }

@@ -4,7 +4,7 @@ use crate::crypto::{compute_mac, verify_mac, SessionKeys};
 use crate::handshake::HandshakeError;
 use crate::messages::{Acknowledge, ControlEnvelope, ControlOp, MessageType};
 use crate::{handshake::transport::ReliableControlChannel, handshake::HandshakeTransport};
-use serde_json::json;
+use serde::{de::DeserializeOwned, Serialize};
 use uuid::Uuid;
 
 /// Signs and verifies control envelopes using the derived session keys.
@@ -47,6 +47,46 @@ impl ControlCrypto {
             ))
         }
     }
+
+    pub fn mac_for_ack(
+        &self,
+        seq: u64,
+        session_id: &Uuid,
+        ok: bool,
+        detail: Option<&str>,
+        payload: Option<&[u8]>,
+    ) -> Result<Vec<u8>, HandshakeError> {
+        let record = AckMacRecord {
+            ok,
+            detail,
+            payload,
+        };
+        let bytes = serde_cbor::to_vec(&record)
+            .map_err(|e| HandshakeError::Protocol(format!("ack encode: {}", e)))?;
+        compute_mac(&self.keys, seq, &bytes, session_id.as_bytes())
+            .map_err(|e| HandshakeError::Authentication(e.to_string()))
+    }
+
+    pub fn decode_ack_payload<T>(payload: Option<&[u8]>) -> Result<Option<T>, HandshakeError>
+    where
+        T: DeserializeOwned,
+    {
+        if let Some(bytes) = payload {
+            serde_cbor::from_slice(bytes)
+                .map(Some)
+                .map_err(|e| HandshakeError::Protocol(format!("ack payload decode: {}", e)))
+        } else {
+            Ok(None)
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct AckMacRecord<'a> {
+    ok: bool,
+    detail: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payload: Option<&'a [u8]>,
 }
 
 /// Control-plane client helper to build authenticated envelopes and handle acks.
@@ -125,17 +165,22 @@ impl ControlResponder {
         seq: u64,
         ok: bool,
         detail: Option<String>,
+        payload: Option<Vec<u8>>,
     ) -> Result<Acknowledge, HandshakeError> {
-        let payload = json!({"ok": ok, "detail": detail});
-        let mac = self
-            .crypto
-            .mac_for_payload(seq, &self.session_id, &payload)?;
+        let mac = self.crypto.mac_for_ack(
+            seq,
+            &self.session_id,
+            ok,
+            detail.as_deref(),
+            payload.as_deref(),
+        )?;
         Ok(Acknowledge {
             message_type: MessageType::AlpineControlAck,
             session_id: self.session_id,
             seq,
             ok,
             detail,
+            payload,
             mac,
         })
     }

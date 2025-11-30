@@ -198,6 +198,8 @@ pub struct Acknowledge {
     pub seq: u64,
     pub ok: bool,
     pub detail: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payload: Option<Vec<u8>>,
     pub mac: Vec<u8>,
 }
 

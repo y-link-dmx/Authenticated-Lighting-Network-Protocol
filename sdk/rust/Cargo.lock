@@ -14,9 +14,9 @@ dependencies = [
 
 [[package]]
 name = "alpine-protocol-rs"
-version = "2.0.20"
+version = "2.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed3d0c4ee6ba21713eda5538ac624dfc4a9740536fb36e555763120ec5d72e2"
+checksum = "890efebcd504644e7f8609b100c0461416c67c3ec7c74b46c84a2131072fe334"
 dependencies = [
  "async-trait",
  "chacha20poly1305",

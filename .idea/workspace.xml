@@ -34,37 +34,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ff85e27c-4996-4f6d-98b9-5e53e1a5c90d" name="Changes" comment="chore: update protocol core, SDKs, and bindings for version 2.0.19 release">
-      <change afterPath="$PROJECT_DIR$/docs/status.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/protocol/ts/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/python-archived/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sdk/ts-archived/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/control_plane.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/control_plane.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/implementation_audit.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/implementation_audit.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/reference_impl.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/reference_impl.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/release_process.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/release_process.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/protocol/python/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/protocol/python/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/roadmap.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/discovery.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/discovery.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/errors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/transport/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/transport/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/python/src/alpine_sdk/transport/udp.py" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/python-archived/src/alpine_sdk/transport/udp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/src/client/AlpineClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/client/AlpineClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/src/client/DiscoveryClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/client/DiscoveryClient.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/src/errors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/errors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/src/transport/udp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/src/transport/udp.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sdk/ts/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/sdk/ts-archived/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

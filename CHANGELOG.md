@@ -15,8 +15,8 @@ All notable changes to ALPINE will be documented in this file.
 - Introduce Phase 3.3.1's pure adaptation core (deterministic state + decision engine) scoped to keyframe cadence, delta depth, and deadlines without integrating yet.
 - Begin Phase 3.3.2 by wiring the adaptation state into the streaming path: network + recovery update `AdaptationState`, and every frame carries `alpine_adaptation` metadata plus a keyframe flag.
 
-## [2.0.20] - 2025-12-02
-- Finalize the Rust-only runtime: publish `alpine-protocol-rs 2.0.20` and `alpine-protocol-sdk 0.1.9`, making the control helpers (`ping`, `status`, `health`, `identity`, `metadata`) and `ack.payload` semantics available only in Rust.
+- ## [2.0.21] - 2025-12-03
+- Finalize the Rust-only runtime: publish `alpine-protocol-rs 2.0.21` and `alpine-protocol-sdk 0.1.10`, making the control helpers (`ping`, `status`, `health`, `identity`, `metadata`) and `ack.payload` semantics available only in Rust.
 - Bindings-only artifacts (`protocol/ts`, `protocol/python`) follow as supporting packages; archived TS/Python SDK runtimes remain for reference.
 ## [2.0.19] - 2025-12-01
 - Extend `Acknowledge` with an optional CBOR `payload` that stays protected by the MAC and provide helpers for decoding typed replies.

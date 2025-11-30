@@ -6,6 +6,7 @@ on:
       - Protocol Publish
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   sdk:
